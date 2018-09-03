@@ -1,0 +1,113 @@
+﻿@model Kolpi.Models.ScoreCard.ResultViewModel
+
+@{
+  ViewData["Title"] = "Result Section";
+  var teamScores = Model.TeamScores;
+  var teamResult = Model.Teams;
+  int sn = 1;
+}
+
+<div>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation"><a href="#allscores" aria-controls="allscores" role="tab" data-toggle="tab">All Scores From Judges</a></li>
+    <li role="presentation"><a href="#result" aria-controls="result" role="tab" data-toggle="tab" class="active">Here We Are, Champion Is Here!</a></li>
+  </ul>
+  <div class="tab-content">
+    
+    <div role="tabpanel" class="tab-pane fade" id="allscores">
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>SN</th>
+          <th>Judge</th>
+          <th>Team</th>
+          <th>Innovation Score</th>
+          <th>Usefulness Score</th>
+          <th>Quality Score</th>
+          <th>CompanyValue Score</th>
+          <th>Presentation Score</th>
+          <th>Weighted Average Score</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in teamScores)
+        {
+          <tr>
+            <td><strong>@(sn++)</strong></td>
+            <td class="text-capitalize col-md-2">
+              @Html.DisplayFor(modelItem => item.Judge)
+            </td>
+            <td class="text-uppercase col-md-2">
+              @Html.DisplayFor(modelItem => item.Team)
+            </td>
+            <td>
+              @Html.DisplayFor(modelItem => item.InnovationScore)
+            </td>
+            <td>
+              @Html.DisplayFor(modelItem => item.UsefulnessScore)
+            </td>
+            <td>
+              @Html.DisplayFor(modelItem => item.QualityScore)
+            </td>
+            <td>
+              @Html.DisplayFor(modelItem => item.CompanyValueScore)
+            </td>
+            <td>
+              @Html.DisplayFor(modelItem => item.PresentationScore)
+            </td>
+            <td>
+              <strong>@Html.DisplayFor(modelItem => item.WeightedAverageScore)</strong>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+      @if (teamResult.Any() && !teamScores.Any())
+      {
+        <h3>Common score sheet from all judges is restricted.</h3>
+      }
+      <p class="text-warning"><strong>Note:</strong> Final weighted avergae is not just a bare average of five scores. Its calculated on the basis of weights given to individual criterias for particular theme statement.</p>
+    </div>
+
+    <div role="tabpanel" class="tab-pane fade in active" id="result">
+      <div class="container-fluid">
+        <div class="row">
+          @for (int i = 0; i < teamResult.Count; i++)
+          {
+            var teamName = teamResult[i].TeamName;
+            var teamScore = $"{teamResult[i].FinalScoreEarned:0.000}";
+            var theme = teamResult[i].Theme.ToString();
+
+            if (i > 0 && i % 3 == 0)
+            {
+              @:</div><div class="row">
+              if(i==3){ <hr/>}
+            }
+     
+            <div class="col-md-4 text-center">
+              @if (i == 0)
+              {
+                <img src="/images/goldmedal.png" alt="Winner" class="img-circle medal-size">
+              }
+              else if (i == 1)
+              {
+                <img src="/images/silvermedal.png" alt="runnerup" class="img-circle medal-size">
+              }
+              else if (i == 2)
+              {
+                <img src="/images/bronzemedal.png" alt="runnerupsecond" class="img-circle medal-size">
+              }
+              else
+              {
+                <img src="/images/lovebatch.png" alt="runnerupsecond" class="img-circle love-token">
+              }
+              <h2 class="text-uppercase text-info">@teamName</h2>
+              <h3 class="text-success">Score: <strong>@teamScore / 10</strong></h3>
+              <h3 class="text-muted">@theme</h3>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

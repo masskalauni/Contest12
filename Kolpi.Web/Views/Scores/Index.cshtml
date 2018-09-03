@@ -1,0 +1,74 @@
+﻿@model IEnumerable<Kolpi.Models.ScoreCard.TeamScoreViewModel>
+@{
+    ViewData["Title"] = "Team Score";
+    short sn = 1;
+}
+<p>
+  <h4 class="pull-left text-uppercase text-info"><strong>Your Evaluations So Far</strong></h4>
+  <a asp-action="Create" class="btn btn-success pull-right">Evaluate New Team</a>
+</p>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>SN</th>
+      <th class="col-md-2">
+        @Html.DisplayNameFor(model => model.Team)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.InnovationScore)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.UsefulnessScore)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.QualityScore)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.CompanyValueScore)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.PresentationScore)
+      </th>
+      <th>
+        @Html.DisplayNameFor(model => model.WeightedAverageScore)
+      </th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach (var item in Model)
+    {
+      <tr>
+        <td><strong>@(sn++)</strong></td>
+        <td>
+          @Html.DisplayFor(modelItem => item.Team)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.InnovationScore)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.UsefulnessScore)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.QualityScore)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.CompanyValueScore)
+        </td>
+        <td>
+          @Html.DisplayFor(modelItem => item.PresentationScore)
+        </td>
+        <td>
+          <strong>@Html.DisplayFor(modelItem => item.WeightedAverageScore)</strong>
+        </td>
+        <td class="col-md-2 text-center">
+          <a asp-action="Edit" asp-route-id="@item.Id" class="text-warning text-uppercase"><strong>Edit</strong></a>&nbsp;
+          <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger text-uppercase"><strong>Remove</strong></a>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<p class="text-warning"><strong>Note:</strong> Final weighted avergae is not just a bare average of five scores. Its calculated on the basis of weights given to individual criterias for particular theme statement.</p>

@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Kolpi.Models.ScoreCard.TeamViewModel>
+
+@{
+  ViewData["Title"] = "All Teams";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card-columns" style="column-count:2">
+  @foreach (var team in Model)
+  {
+    <div class="card border-success">
+      <img class="card-img-top img-thumbnail" src="//placehold.it/500x220" alt="Card image cap">
+      <div class="card-header">
+        <strong>@team.TeamName (@team.TeamCode)</strong>
+        <span class="float-right">
+          <a asp-action="Edit" asp-route-id="@team.Id" title="Edit Your Team"><ion-icon name="create" size="small"></ion-icon></a>
+          <a asp-action="Delete" asp-route-id="@team.Id" title="Delete Your Team"><ion-icon name="trash" size="small"></ion-icon></a>
+        </span>
+      </div>
+      <div class="card-body text-info">
+        <h5 class="card-title"><label asp-for="@team.ProblemStatement"></label></h5>
+        <p class="card-text">@team.ProblemStatement</p>
+
+        <h5 class="card-title"><label asp-for="@team.Theme"></label></h5>
+        <p class="card-text">@team.Theme</p>
+
+        <h5 class="card-title"><label asp-for="@team.Participants"></label></h5>
+        <p class="card-text">
+          <ol>
+            @foreach (var participant in team.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+              <li>@participant</li>
+            }
+          </ol>
+        </p>
+
+        <h5 class="card-title"><label asp-for="@team.ITRequirements"></label></h5>
+        <p class="card-text">@team.ITRequirements</p>
+
+        <h5 class="card-title"><label asp-for="@team.OtherRequirements"></label></h5>
+        <p class="card-text">@team.OtherRequirements</p>
+
+        <h5 class="card-title"><label asp-for="@team.CreatedBy"></label></h5>
+        <p class="card-text">@team.CreatedBy</p>
+      </div>
+    </div>
+  }
+</div>
