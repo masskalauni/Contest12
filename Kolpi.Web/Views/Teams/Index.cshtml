@@ -5,43 +5,56 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card-columns" style="column-count:2">
+<div class="card-columns">
   @foreach (var team in Model)
   {
     <div class="card border-success">
-      <img class="card-img-top img-thumbnail" src="//placehold.it/500x220" alt="Card image cap">
-      <div class="card-header">
-        <strong>@team.TeamName (@team.TeamCode)</strong>
-        <span class="float-right">
-          <a asp-action="Edit" asp-route-id="@team.Id" title="Edit Your Team"><ion-icon name="create" size="small"></ion-icon></a>
-          <a asp-action="Delete" asp-route-id="@team.Id" title="Delete Your Team"><ion-icon name="trash" size="small"></ion-icon></a>
-        </span>
+      <div class="card-header text-center text-primary">
+        <b>@team.TeamName</b>
+        @if (team.IsCreatedByCurrentUser || User.IsInRole(Kolpi.Web.Constants.Role.Admin))
+        {
+          <span class="float-right">
+            <a asp-action="Edit" asp-route-identifier="@team.TeamCode" title="Edit Your Team"><ion-icon name="create" size="small"></ion-icon></a>
+            <a asp-action="Delete" asp-route-identifier="@team.TeamCode" title="Delete Your Team"><ion-icon name="trash" size="small"></ion-icon></a>
+          </span>
+        }
       </div>
-      <div class="card-body text-info">
-        <h5 class="card-title"><label asp-for="@team.ProblemStatement"></label></h5>
-        <p class="card-text">@team.ProblemStatement</p>
+      <div class="card-body p-2 text-center" style="font-size:14px;">
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.ProblemStatement"></label>
+        <p class="mb-2 text-primary">@team.ProblemStatement</p>
 
-        <h5 class="card-title"><label asp-for="@team.Theme"></label></h5>
-        <p class="card-text">@team.Theme</p>
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.Theme"></label>
+        <p class="mb-2 text-primary">@team.Theme</p>
 
-        <h5 class="card-title"><label asp-for="@team.Participants"></label></h5>
-        <p class="card-text">
-          <ol>
-            @foreach (var participant in team.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-              <li>@participant</li>
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.Participants"></label>
+        <p class="mb-2 small text-primary">
+          @foreach (var participant in team.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+          {
+            var isLead = participant.IndexOf("lead", StringComparison.InvariantCultureIgnoreCase) != -1;
+              
+            if (isLead)
+            {              
+              <strong title="Team Lead">@participant</strong>
             }
-          </ol>
+            else
+            {
+              @participant
+            }
+            <br />
+          }
         </p>
 
-        <h5 class="card-title"><label asp-for="@team.ITRequirements"></label></h5>
-        <p class="card-text">@team.ITRequirements</p>
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.ITRequirements"></label>
+        <p class="mb-2 text-primary">@(team.ITRequirements ?? "None")</p>
 
-        <h5 class="card-title"><label asp-for="@team.OtherRequirements"></label></h5>
-        <p class="card-text">@team.OtherRequirements</p>
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.RepoUrl"></label>
+        <p class="mb-2 text-primary">@(team.RepoUrl ?? "Will be updated soon")</p>
 
-        <h5 class="card-title"><label asp-for="@team.CreatedBy"></label></h5>
-        <p class="card-text">@team.CreatedBy</p>
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.OtherRequirements"></label>
+        <p class="mb-2 text-primary">@(team.OtherRequirements ?? "None")</p>
+
+        <label class="font-weight-bold mb-0 text-success" asp-for="@team.CreatedBy"></label>
+        <p class="mb-2 text-primary">@team.CreatedByFormatted</p>
       </div>
     </div>
   }

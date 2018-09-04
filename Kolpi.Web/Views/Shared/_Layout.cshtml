@@ -28,23 +28,28 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Teams</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Create"><ion-icon name="add"></ion-icon>Add Your Team</a>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Create"><ion-icon name="add"></ion-icon> Add Your Team</a>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Index"><ion-icon name="grid"></ion-icon> All Teams</a>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Index"><ion-icon name="analytics"></ion-icon> Team Analytics</a>
             </div>
           </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Team Scores</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Create"><ion-icon name="add-circle-outline"></ion-icon>Evaluate Team</a>
-              <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Index"><ion-icon name="add-circle-outline"></ion-icon>Evaluation History</a>
-              <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index"><ion-icon name="add-circle-outline"></ion-icon>Final Result</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="About"><ion-icon name="help"></ion-icon>About</a>
-            </div>
-          </li>
+          @if (User.IsInRole(Kolpi.Web.Constants.Role.Admin))
+          {
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Team Scores</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Create"><ion-icon name="thumbs-up"></ion-icon> Evaluate Team</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Index"><ion-icon name="filing"></ion-icon> Evaluation History</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index"><ion-icon name="medal"></ion-icon> Final Result</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="About"><ion-icon name="help"></ion-icon>About</a>
+              </div>
+            </li>
 
-          <li class="nav-item">
-            <a class="nav-link" asp-area="" asp-controller="Survey" asp-action="AdminIndex"><ion-icon name="list"></ion-icon>Survey</a>
-          </li>
+            <li class="nav-item">
+              <a class="nav-link" asp-area="" asp-controller="Survey" asp-action="AdminIndex"><ion-icon name="list"></ion-icon>Survey</a>
+            </li>
+          }
         }
       </ul>
       <partial name="_LoginPartial" />
@@ -53,15 +58,17 @@
 
   <partial name="_CookieConsentPartial" />
 
-  <div class="p-1">
+  <div class="p-3">
     @RenderBody()
   </div>
 
   <environment include="Development">
+    <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="https://unpkg.com/ionicons@4.4.2/dist/ionicons.js"></script>
   </environment>
   <environment exclude="Development">
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/bootstrap.min.js"
             asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
             asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
