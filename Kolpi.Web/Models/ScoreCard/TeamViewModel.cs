@@ -12,7 +12,7 @@ namespace Kolpi.Models.ScoreCard
         {
         }
 
-        public TeamViewModel(Team team)
+        public TeamViewModel(Team team, string loggedInUser = "")
         {
             Id = team.Id;
             TeamCode = team.TeamCode;
@@ -23,8 +23,12 @@ namespace Kolpi.Models.ScoreCard
             OtherRequirements = team.OtherRequirements;
             FinalScoreEarned = team.FinalScoreEarned;
             Participants = String.Join(Environment.NewLine, team.Participants
-                ?.Select(x => $"{x.Name}, {x.Inumber}, {x.OfficeMail}, {x.Department}"));
-            CreatedBy = $"{team.CreatedBy} [On {team.CreatedOn:MMM dd hh:mm tt}]";
+                ?.Select(x => $"{x.Name}, {x.Inumber}, {x.Phone}, {x.OfficeMail}, {x.Department}"));
+            CreatedBy = team.CreatedBy ?? "";
+            CreatedOn = team.CreatedOn;
+            CreatedByFormatted = $"{CreatedBy} [On {CreatedOn:MMM dd hh:mm tt}]";
+            IsCreatedByCurrentUser = CreatedBy.Equals(loggedInUser);
+            RepoUrl = team.RepoUrl;
         }
         public int Id { get; set; }
         public string TeamCode { get; set; }
@@ -48,6 +52,13 @@ namespace Kolpi.Models.ScoreCard
 
         [Display(Name = "Team Created By")]
         public string CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+
+        [Display(Name = "Git Repository")]
+        public string RepoUrl { get; set; }
+
+        public string CreatedByFormatted { get; set; }
+        public bool IsCreatedByCurrentUser { get; set; }
 
         [NotMapped]
         public float FinalScoreEarned { get; set; }

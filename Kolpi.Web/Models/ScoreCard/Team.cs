@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Kolpi.Enums;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Security.Claims;
 
 namespace Kolpi.Models.ScoreCard
 {
@@ -13,19 +12,19 @@ namespace Kolpi.Models.ScoreCard
         {
         }
 
-        public Team(TeamViewModel teamViewModel)
+        public Team(TeamViewModel teamViewModel, IList<Participant> participants)
         {
             Id = teamViewModel.Id;
-            TeamName = teamViewModel.TeamName;
-            TeamCode = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
+            TeamCode = teamViewModel.TeamCode;
+            TeamName = teamViewModel.TeamName;            
             Theme = teamViewModel.Theme;
             ProblemStatement = teamViewModel.ProblemStatement;
             ITRequirements = teamViewModel.ITRequirements;
-            OtherRequirements = teamViewModel.OtherRequirements;            
-            Participants = teamViewModel.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => new Participant(x.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))).ToList();
-            CreatedOn = DateTime.Now;
+            OtherRequirements = teamViewModel.OtherRequirements;
+            Participants = participants;
+            CreatedOn = teamViewModel.CreatedOn;
             CreatedBy = teamViewModel.CreatedBy;
+            RepoUrl = teamViewModel.RepoUrl;
         }
 
         public int Id { get; set; }

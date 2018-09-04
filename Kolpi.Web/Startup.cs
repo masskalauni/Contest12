@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Kolpi.Web.Services;
 using System.Threading.Tasks;
 using System;
+using Kolpi.Web.Constants;
 
 namespace Kolpi.Web
 {
@@ -71,7 +72,7 @@ namespace Kolpi.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
         {
             if (env.IsDevelopment())
             {
@@ -92,25 +93,27 @@ namespace Kolpi.Web
 
             app.UseMvc(routes =>
             {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                routes.MapRoute("default", "{controller=Home}/{action=Index}/{identifier?}");
             });
+
+            CreateRoles(services).Wait();
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
         {
-            //initializing custom roles 
+            //initializing custom roles and admin user
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            string[] roleNames = { "Admin", "EventCommitte", "Participant" };
-            IdentityResult roleResult;
+            string[] roleNames = { Role.Admin, Role.Committee, Role.Participant };
 
-
+            if (await roleManager.Roles.AnyAsync())
+                return;
             foreach (var roleName in roleNames)
             {
                 var roleExist = await roleManager.RoleExistsAsync(roleName);
                 if (!roleExist)
                 {
-                    roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
                 }
             }
 
@@ -118,10 +121,8 @@ namespace Kolpi.Web
             var user = await userManager.FindByNameAsync(userName);
             if (user == null)
                 return;
-            
-            await userManager.AddToRoleAsync(user, "Admin");
 
+            await userManager.AddToRoleAsync(user, Role.Admin);
         }
-
     }
 }

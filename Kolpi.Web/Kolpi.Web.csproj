@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20180904170552_Team_Navigation_To_Participant.cs" />
+    <Compile Remove="Migrations\20180904170552_Team_Navigation_To_Participant.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="app.db" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
