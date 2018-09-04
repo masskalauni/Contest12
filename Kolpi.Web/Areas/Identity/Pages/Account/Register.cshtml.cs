@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Kolpi.Web.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -67,10 +68,23 @@ namespace Kolpi.Web.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-                var result = await _userManager.CreateAsync(user, Input.Password);
-                if (result.Succeeded)
+                var userResult = await _userManager.CreateAsync(user, Input.Password);
+                if (userResult.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+                    var userPersisted = await _userManager.FindByNameAsync(Input.Email);
+                    var roleResult = await _userManager.AddToRoleAsync(userPersisted, Role.Participant);
+
+                    if (roleResult.Succeeded)
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
+
+                    foreach (var error in roleResult.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
 
                     // var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     // var callbackUrl = Url.Page(
@@ -80,15 +94,12 @@ namespace Kolpi.Web.Areas.Identity.Pages.Account
                     //     protocol: Request.Scheme);
 
                     // await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return LocalRedirect(returnUrl);
+                    //     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");                    
                 }
-                foreach (var error in result.Errors)
+                foreach (var error in userResult.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
-                }
+                }                
             }
 
             // If we got this far, something failed, redisplay form
