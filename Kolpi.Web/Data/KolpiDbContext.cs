@@ -31,6 +31,13 @@ namespace Kolpi.Data
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
             builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
 
+            //Relate team to participant
+            builder.Entity<Team>()
+                .HasMany(t => t.Participants)
+                .WithOne(p => p.Team)
+                .HasForeignKey(x => x.TeamId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Entity<SurveyThread>()
                 .HasMany(f => f.Feedbacks)
                 .WithOne(s => s.SurveyThread)

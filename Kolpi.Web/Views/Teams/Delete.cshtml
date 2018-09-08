@@ -36,6 +36,12 @@
           @Html.DisplayFor(model => model.ProblemStatement)
         </dd>
         <dt>
+          @Html.DisplayNameFor(model => model.Location)
+        </dt>
+        <dd>
+          @Html.DisplayFor(model => model.Location)
+        </dd>
+        <dt>
           @Html.DisplayNameFor(model => model.ITRequirements)
         </dt>
         <dd>
@@ -62,7 +68,6 @@
       </dl>
 
       <form asp-action="Delete">
-        <input type="hidden" asp-for="TeamCode" />
         <input type="submit" value="Delete" class="btn btn-outline-danger" />
         <a asp-action="Index" class="btn btn-outline-success">Back to All Teams</a>
         <a asp-action="Edit" asp-route-identifier="@Model.TeamCode" class="btn btn-outline-success">Edit @Model.TeamName</a>

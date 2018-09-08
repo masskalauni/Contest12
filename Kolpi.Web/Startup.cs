@@ -12,6 +12,7 @@ using Kolpi.Web.Services;
 using System.Threading.Tasks;
 using System;
 using Kolpi.Web.Constants;
+using System.Collections.Generic;
 
 namespace Kolpi.Web
 {
@@ -106,23 +107,33 @@ namespace Kolpi.Web
             var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
             string[] roleNames = { Role.Admin, Role.Committee, Role.Participant };
 
-            if (await roleManager.Roles.AnyAsync())
-                return;
-            foreach (var roleName in roleNames)
+            if (!(await roleManager.Roles.AnyAsync()))
             {
-                var roleExist = await roleManager.RoleExistsAsync(roleName);
-                if (!roleExist)
+                foreach (var roleName in roleNames)
                 {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                    var roleExist = await roleManager.RoleExistsAsync(roleName);
+                    if (!roleExist)
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(roleName));
+                    }
                 }
             }
 
-            string userName = Configuration["AppSettings:Admin:UserName"];
-            var user = await userManager.FindByNameAsync(userName);
-            if (user == null)
-                return;
+            List<string> admins = Configuration.GetSection("AppSettings:Admins").Get<List<string>>();
+            foreach (var admin in admins)
+            {
+                var user = await userManager.FindByNameAsync(admin);
+                
+                //user has not registered yet, go for other one
+                if (user == null)
+                    continue;
 
-            await userManager.AddToRoleAsync(user, Role.Admin);
+                //Already in admin role, go ahead
+                if (await userManager.IsInRoleAsync(user, Role.Admin))
+                    continue;
+
+                await userManager.AddToRoleAsync(user, Role.Admin);
+            }
         }
     }
 }

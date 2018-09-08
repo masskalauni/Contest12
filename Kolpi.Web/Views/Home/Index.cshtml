@@ -1,10 +1,35 @@
 ﻿@{ ViewData["Title"] = "Home"; }
-<div class="jumbotron text-center">
-  <h1 class="text-success">Welcome To Scoring Board</h1>
-  <h2><strong>Dedicated To: V-Hackathon Committee.</strong></h2>
-  <p>
-    <a asp-action="Index" class="btn btn-primary btn-lg" role="button">Your List Of Submissions</a>
-    <a asp-action="Create" class="btn btn-primary btn-lg" role="button">Evaluate New Team</a>
-  <p>
-  </p>
-</div>
+@if (!User.Identity.IsAuthenticated)
+{
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container text-center">
+      <h1 class="display-4">KOLPI - a tool for hackathon</h1>
+      <p class="lead">For team registration & dashboard, judging, publishing results and surveying.</p>
+    </div>
+  </div>
+}
+else
+{
+  <div class="text-center text-info mb-3">
+    <h2>Welcome to verscend hackathon event season-2</h2>
+    <div class="text-center">
+      <a asp-area="" asp-controller="Teams" asp-action="Create" class="btn btn-outline-info"><ion-icon name="add" class="align-middle"></ion-icon><span class="align-middle"> Register Your Team</span></a>
+      <a asp-area="" asp-controller="Teams" asp-action="Index" class="btn btn-outline-info"><ion-icon name="grid" class="align-middle"></ion-icon><span class="align-middle"> Registered Teams</span></a>
+      <a asp-area="" asp-controller="Teams" asp-action="Analytics" class="btn btn-outline-info"><ion-icon name="analytics" class="align-middle"></ion-icon><span class="align-middle"> Teams Synopsis</span></a>
+    </div>
+  </div>
+  <div class="card-deck">
+    <div class="card">
+      <img class="card-img-top" src="~/images/vhackathon_teaser.jpg" alt="Vhachathon Teaser">
+      <div class="card-body">
+        <h2 class="card-text text-center text-info">Get ready to learn and teach!</h2>
+      </div>
+    </div>
+    <div class="card">
+      <img class="card-img-top" src="~/images/vhackathon_ps.jpg" alt="Vhackathon Problem Statement">
+      <div class="card-body">
+        <h2 class="card-text text-center text-info">Let's build a solution of value!</h2>
+      </div>
+    </div>
+  </div>
+}

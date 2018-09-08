@@ -13,11 +13,12 @@
     <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/4.1.1/css/bootstrap.min.css"
           asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
           asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+    <link href="https://unpkg.com/ionicons@4.4.2/dist/css/ionicons.min.css" rel="stylesheet">
   </environment>
 </head>
 <body>
-  <nav class="navbar navbar-expand-md navbar-light bg-warning">
-    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><ion-icon name="home"></ion-icon>KOLPI</a>
+  <nav class="navbar navbar-expand-md navbar-light bg-warning" style="line-height:normal">
+    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><ion-icon name="home" class="align-middle"></ion-icon><span class="align-middle">KOLPI</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -28,9 +29,11 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Teams</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Create"><ion-icon name="add"></ion-icon> Add Your Team</a>
-              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Index"><ion-icon name="grid"></ion-icon> All Teams</a>
-              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Index"><ion-icon name="analytics"></ion-icon> Team Analytics</a>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Create"><ion-icon name="add" class="align-middle"></ion-icon><span class="align-middle"> Register Your Team</span></a>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Index"><ion-icon name="grid" class="align-middle"></ion-icon><span class="align-middle"> All Teams</span></a>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Analytics"><ion-icon name="analytics" class="align-middle"></ion-icon><span class="align-middle"> Teams Synopsis</span></a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="About"><ion-icon name="information-circle" class="align-middle"></ion-icon><span class="align-middle"> About</span></a>
             </div>
           </li>
           @if (User.IsInRole(Kolpi.Web.Constants.Role.Admin))
@@ -38,11 +41,11 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Team Scores</a>
               <div class="dropdown-menu">
-                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Create"><ion-icon name="thumbs-up"></ion-icon> Evaluate Team</a>
-                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Index"><ion-icon name="filing"></ion-icon> Evaluation History</a>
-                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index"><ion-icon name="medal"></ion-icon> Final Result</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Create"><ion-icon name="thumbs-up" class="align-middle"></ion-icon><span class="align-middle"> Evaluate Team</span></a>
+                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Index"><ion-icon name="filing" class="align-middle"></ion-icon><span class="align-middle"> Evaluation History</span></a>
+                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index"><ion-icon name="medal" class="align-middle"></ion-icon><span class="align-middle"> Final Result</span></a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="About"><ion-icon name="help"></ion-icon>About</a>
+                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="About"><ion-icon name="information-circle" class="align-middle"></ion-icon><span class="align-middle"> About</span></a>
               </div>
             </li>
 
@@ -75,6 +78,7 @@
             crossorigin="anonymous"
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
     </script>
+    <script src="https://unpkg.com/ionicons@4.4.2/dist/ionicons.js"></script>
   </environment>
 
   @RenderSection("Scripts", required: false)

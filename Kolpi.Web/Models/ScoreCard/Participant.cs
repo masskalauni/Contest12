@@ -25,6 +25,8 @@ namespace Kolpi.Models.ScoreCard
         public string Phone { get; set; }
         public string Department { get; set; }
         public bool IsTeamLead { get; set; } = false;
+        
+        public int TeamId { get; set; }
         public Team Team { get; set; }
     }
 }

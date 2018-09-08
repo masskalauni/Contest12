@@ -8,6 +8,7 @@
         public const string AdminOrCommittee = "Admin,Committee";
         public const string CommitteeOrParticipant = "Committee,Participant";
         public const string AdminOrCommitteeOrParticipant = "Admin,Committee,Participant";
+        public const string AdminOrParticipant = "Admin,Participant";
 
     }
 }

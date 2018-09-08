@@ -4,14 +4,16 @@ using Kolpi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kolpi.Web.Migrations
 {
     [DbContext(typeof(KolpiDbContext))]
-    partial class KolpiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180905105216_Location_Column_Team")]
+    partial class Location_Column_Team
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace Kolpi.Web.Migrations
 
                     b.Property<string>("Phone");
 
-                    b.Property<int>("TeamId");
+                    b.Property<int?>("TeamId");
 
                     b.HasKey("Id");
 
@@ -51,8 +53,6 @@ namespace Kolpi.Web.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<byte[]>("Avatar");
 
                     b.Property<string>("CreatedBy");
 
@@ -333,8 +333,7 @@ namespace Kolpi.Web.Migrations
                 {
                     b.HasOne("Kolpi.Models.ScoreCard.Team", "Team")
                         .WithMany("Participants")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TeamId");
                 });
 
             modelBuilder.Entity("Kolpi.Models.ScoreCard.TeamScore", b =>

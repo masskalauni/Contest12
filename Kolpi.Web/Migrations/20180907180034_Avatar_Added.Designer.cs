@@ -4,14 +4,16 @@ using Kolpi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kolpi.Web.Migrations
 {
     [DbContext(typeof(KolpiDbContext))]
-    partial class KolpiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180907180034_Avatar_Added")]
+    partial class Avatar_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace Kolpi.Web.Migrations
 
                     b.Property<string>("Phone");
 
-                    b.Property<int>("TeamId");
+                    b.Property<int?>("TeamId");
 
                     b.HasKey("Id");
 
@@ -333,8 +335,7 @@ namespace Kolpi.Web.Migrations
                 {
                     b.HasOne("Kolpi.Models.ScoreCard.Team", "Team")
                         .WithMany("Participants")
-                        .HasForeignKey("TeamId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("TeamId");
                 });
 
             modelBuilder.Entity("Kolpi.Models.ScoreCard.TeamScore", b =>
