@@ -7,7 +7,7 @@
 
 <div class="container h-100">
   <div class="row h-100 justify-content-center">
-    <div class="col-md-4 p-4">
+    <div class="col-md-5 p-4">
       <section>
         <form method="post">
           <h5>Your account with Kolpi</h5>
@@ -37,7 +37,7 @@
         </form>
       </section>
     </div>
-    <div class="col-md-4 ml-5 p-4">
+    <div class="col-md-5 ml-5 p-4">
       <section>
         <h5>Or sign in with</h5>
         <hr />
@@ -52,14 +52,8 @@
               <div>
                 <p>
                   @foreach (var provider in Model.ExternalLogins)
-                  {                    
-                    if (provider.Name.Equals("Google"))
-                    {
-                      <button type="submit" class="btn btn-outline-info" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><ion-icon name="logo-google"></ion-icon> @provider.DisplayName</button>
-                    }
-                    else{
-                      <button type="submit" class="btn btn-outline-info" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><ion-icon name="logo-windows"></ion-icon> @provider.DisplayName</button>
-                    }                      
+                  {
+                    <button type="submit" class="btn btn-outline-info" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><ion-icon name="@(provider.Name.Equals("Google") ? "logo-google": "logo-windows")" class="align-middle" size="large "></ion-icon><span class="align-middle">@provider.DisplayName Account</span></button>
                   }
                 </p>
               </div>

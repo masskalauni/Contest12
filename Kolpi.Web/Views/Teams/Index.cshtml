@@ -5,13 +5,14 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="card-columns" style="line-height:normal">
-  @if (Model ==  null || Model.Count() == 0)
-  {
-    <h2 class="text-center text-danger">No teams registered yet</h2>
-  }
-  else
-  {
+
+@if (Model == null || Model.Count() == 0)
+{
+  <h2 class="text-center text-danger">No teams registered yet</h2>
+}
+else
+{
+  <div class="card-columns" style="line-height:normal">
     @foreach (var team in Model)
     {
       <div class="card border-success">
@@ -67,6 +68,7 @@
           <p class="mb-2 text-primary">@team.CreatedByFormatted</p>
         </div>
       </div>
+
     }
-  }
-</div>
+  </div>
+}

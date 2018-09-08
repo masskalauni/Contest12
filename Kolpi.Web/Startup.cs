@@ -46,7 +46,8 @@ namespace Kolpi.Web
                 .AddGoogle(googleOptions =>
                 {
                     googleOptions.ClientId = "1098909678334-j9hktlgauqctf712m8fv08vddm560jot.apps.googleusercontent.com";
-                    googleOptions.ClientSecret = "Yqk7qY9MLAKqWB-_GP9SoFKc";
+                    googleOptions.ClientSecret = "8vrbe318_KysX4yEA-MhD21f";
+                    
                 })
                 .AddMicrosoftAccount(microsoftOptions =>
                 {
