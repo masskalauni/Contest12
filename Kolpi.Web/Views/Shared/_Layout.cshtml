@@ -16,7 +16,7 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-md navbar-light bg-warning" style="line-height:normal">
-    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><ion-icon name="home" class="align-middle"></ion-icon><span class="align-middle">KOLPI</span></a>
+    <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><ion-icon name="home"></ion-icon></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -53,6 +53,7 @@
           }
         }
       </ul>
+      <ion-icon name="time" size="large" class="align-middle"></ion-icon><span class="text-danger text-light font-weight-bold align-middle" id="countdown"></span><span class="align-middle ml-1">left for team registration.</span>
       <partial name="_LoginPartial" />
     </div>
   </nav>
@@ -71,7 +72,36 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/ionicons@4.4.2/dist/ionicons.js"></script>
   </environment>
+  <script>
+    // Set the date we're counting down to
+    var countDownDate = new Date("Sep 18, 2018 16:00:00").getTime();
 
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+      // Get todays date and time
+      var now = new Date().getTime();
+
+      // Find the distance between now and the count down date
+      var distance = countDownDate - now;
+
+      // Time calculations for days, hours, minutes and seconds
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      // Display the result in the element with id="countdown"
+      document.getElementById("countdown").innerHTML = " " + days + " Days " + hours + " Hr "
+        + minutes + " Min " + seconds + " Sec";
+
+      // If the count down is finished, write some text
+      if (distance < 0) {
+        clearInterval(x);
+        document.getElementById("countdown").innerHTML = "<span class='text-danger'>Team registration expired.</span>";
+      }
+    }, 1000);
+  </script>
   @RenderSection("Scripts", required: false)
 </body>
 </html>

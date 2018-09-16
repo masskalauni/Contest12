@@ -16,7 +16,7 @@ else
     @foreach (var team in Model)
     {
       <div class="card border-success">
-        <img class="card-img-top" src="@(team.AvatarDataUrl ?? "/images/team_avatar.png")" alt="Team Avatar">
+        <img class="card-img-top" src="@(team.AvatarDataUrl ?? "/images/team.png")" alt="Team Avatar">
         <div class="card-header text-center text-primary">
           <b>@team.TeamName</b>
           @if (team.IsCreatedByCurrentUser || User.IsInRole(Kolpi.Web.Constants.Role.Admin))

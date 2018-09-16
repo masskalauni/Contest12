@@ -46,7 +46,7 @@ namespace Kolpi.Web.Controllers
                 var record = _context.TeamScores.Where(x => x.Team.TeamCode == teamScoreViewModel.Team && x.KolpiUserId == me).ToList();
 
                 if (record.Any())
-                    return RedirectToAction(nameof(Error), new { errorCode = "Duplicate Record", message = $"You aleady evaluated team: {Teams.Find(teamScoreViewModel.Team).TeamName}. Please update their score if you wish to." });
+                    return RedirectToAction(nameof(HomeController.Error), "Home", new { errorCode = "Duplicate Record", message = $"You aleady evaluated team: {Teams.Find(teamScoreViewModel.Team).TeamName}. Please update their score if you wish to." });
 
                 var teamScore = new TeamScore(teamScoreViewModel)
                 {
@@ -155,15 +155,7 @@ namespace Kolpi.Web.Controllers
         {
             ViewData["Title"] = "About";
             return View();
-        }
-
-        public IActionResult Error(string errorCode, string message)
-        {
-            if (errorCode == "Duplicate Record")
-                return View(new ErrorViewModel { ErrorCode = errorCode, Message = message });
-
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        }        
 
         private bool TeamExists(int id)
         {

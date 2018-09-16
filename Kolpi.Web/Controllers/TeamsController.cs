@@ -76,6 +76,11 @@ namespace Kolpi.Web.Controllers
 
         public IActionResult Create()
         {
+            if (DateTime.Now > DateTime.Parse("Sep 18, 2018 16:00:00 PM"))
+            {
+                return RedirectToAction("Error", "Home", new { errorCode = "Registration", message = "Team registration expired." });
+            }
+
             ViewData["locations"] = FetchEventLocationSelectItemList();
             return View();
         }
