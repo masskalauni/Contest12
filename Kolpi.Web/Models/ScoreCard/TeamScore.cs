@@ -15,7 +15,7 @@ namespace Kolpi.Models.ScoreCard
             PresentationScore = teamScoreViewModel.PresentationScore.Value;
 
             var teamCode = teamScoreViewModel.Team;
-            WeightedAverageScore = teamScoreViewModel.WeightedAverageScore.Value;
+            InnovationAverageScore = teamScoreViewModel.WeightedAverageScore.Value;
             Team = Data.Teams.Find(teamCode);
         }
 
@@ -25,7 +25,8 @@ namespace Kolpi.Models.ScoreCard
         public float QualityScore { get; set; }
         public float CompanyValueScore { get; set; }
         public float PresentationScore { get; set; }
-        public float WeightedAverageScore { get; set; }
+        public float InnovationAverageScore { get; set; }
+        public float ImplementationAverageScore { get; set; }
 
         public string KolpiUserId { get; set; }
         public IdentityUser KolpiUser { get; set; }

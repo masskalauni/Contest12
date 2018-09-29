@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Kolpi.Data;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Kolpi.Web.Controllers
 {
@@ -29,9 +30,12 @@ namespace Kolpi.Web.Controllers
             return View(scoreList.Select(x => new TeamScoreViewModel(x)));
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var model = new TeamScoreViewModel { Team = "Teamcode to make it selected" };
+            var teams = await _context.Teams.ToListAsync();
+            var teamSelectlist = teams.Select(x => new SelectListItem { Value = x.TeamCode, Text = $"{x.TeamName} ( {x.Theme.ToString()} )" }).ToList();
+
+            var model = new TeamScoreViewModel { Teams = teamSelectlist };
             return View(model);
         }
 
@@ -104,7 +108,7 @@ namespace Kolpi.Web.Controllers
                     entity.Entity.CompanyValueScore = teamScoreViewModel.CompanyValueScore.Value;
                     entity.Entity.PresentationScore = teamScoreViewModel.PresentationScore.Value;
                     entity.Entity.QualityScore = teamScoreViewModel.QualityScore.Value;
-                    entity.Entity.WeightedAverageScore = teamScoreViewModel.WeightedAverageScore.Value;
+                    entity.Entity.InnovationAverageScore = teamScoreViewModel.WeightedAverageScore.Value;
 
                     await _context.SaveChangesAsync();
                 }

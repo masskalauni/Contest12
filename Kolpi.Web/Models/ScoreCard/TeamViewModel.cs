@@ -68,7 +68,7 @@ namespace Kolpi.Models.ScoreCard
 
         public string Location { get; set; }
 
-        [Display(Name = "Team Regitered By")]
+        [Display(Name = "Team Registered By")]
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
 
@@ -83,14 +83,14 @@ namespace Kolpi.Models.ScoreCard
 
         [Required(ErrorMessage = "Enter your participants in provided format.")]
         [DataType(DataType.MultilineText), Display(Name = "Participants")]
-        public string Participants { get; set; } = @"Bishnu Rawal, i82287, 9849182885, bishnu.rawal@verscend.com, R&D1\n\rNiraj Shah (Team Lead), i65001, 1111111111, niraj.shah@verscend.com, R&D1";
+        public string Participants { get; set; } = @"Bishnu Rawal, i82287, R&D1\n\rNiraj Shah (Team Lead), i65001,R&D1";
 
         public static string SerializeParticipants(IEnumerable<Participant> participants) =>
             string.Join(Environment.NewLine, participants
                             ?.Select(x => SerializeParticipant(x)));
 
         public static string SerializeParticipant(Participant participant) =>
-            $"{participant.Name}, {participant.Inumber}, {participant.Phone}, {participant.OfficeMail}, {participant.Department}";
+            $"{participant.Name}, {participant.Inumber}, {participant.Department}";
 
         public static string SerializeTeam(Team team) =>
             $"{team.TeamName}, {team.TeamCode}, {team.Participants?.FirstOrDefault(x => x.IsTeamLead)?.Name ?? "No Lead Assigned"}, {team.Location}";

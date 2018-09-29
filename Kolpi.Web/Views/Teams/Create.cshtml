@@ -5,7 +5,8 @@
   Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4 class="text-center mt-3">Your Team Detail</h4>
+<h4 class="text-center mt-3">Your Team Detail<small class="text-warning"> (Time's up for Kathmandu center)</small></h4>
+
 <div class="container h-100">
   <div class="row h-100 justify-content-center">
     <div class="col-md-8">
@@ -28,13 +29,13 @@
         </div>
         <div class="form-group">
           <label asp-for="Participants" class="font-weight-bold"></label>
-          <textarea asp-for="Participants" class="form-control" rows="5" placeholder="Name, INumber, Phone, Email, Department" required></textarea>
+          <textarea asp-for="Participants" class="form-control" rows="5" placeholder="Name, INumber, Department" required></textarea>
           <span asp-validation-for="Participants" class="text-danger"></span>
           <div class="alert alert-info" role="alert">
             <b>Participants input Format: </b><small>Each participant must be in new line with lead indicated as <b>(Team lead)</b> in name field.</small><br />
-            Bishnu Rawal, i82287, 9849182885, bishnu.rawal@verscend.com, R&D1 <br />
-            Niraj Shah (Team Lead), i65001, 1111111112, niraj.shah@verscend.com, R&D1 <br />
-            Sanjeev Shrestha, i81111, 7777777770, sanjeev.shrestha@verscend.com, GA
+            Bishnu Rawal, i82287, R&D1 <br />
+            Niraj Shah (Team Lead), i65001, R&D1 <br />
+            Sanjeev Shrestha, i81111, GA
           </div>
         </div>
         <div class="form-group">

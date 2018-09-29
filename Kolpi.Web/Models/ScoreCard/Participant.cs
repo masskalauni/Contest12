@@ -13,9 +13,7 @@ namespace Kolpi.Models.ScoreCard
             Name = propValues[0].Trim();
             IsTeamLead = !string.IsNullOrWhiteSpace(Name) && Name.IndexOf("lead", StringComparison.InvariantCultureIgnoreCase) != -1;
             Inumber = propValues[1].Trim();
-            Phone = propValues[2].Trim();
-            OfficeMail = propValues[3].Trim();
-            Department = propValues[4].Trim();
+            Department = propValues[2].Trim();
         }
 
         public int Id { get; set; }

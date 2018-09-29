@@ -33,7 +33,7 @@ namespace Kolpi.Web.Controllers
                 .Select(g => new TeamViewModel
                 {
                     TeamName = g.Key,
-                    FinalScoreEarned = g.Sum(x => x.WeightedAverageScore) / g.Count(),
+                    FinalScoreEarned = g.Sum(x => x.InnovationAverageScore) / g.Count(),
                     Theme = Teams.Find(g.Key).Theme
                 }).ToList();
 

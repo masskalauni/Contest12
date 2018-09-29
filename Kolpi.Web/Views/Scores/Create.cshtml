@@ -1,99 +1,64 @@
 ﻿@model Kolpi.Models.ScoreCard.TeamScoreViewModel
 @{
-    ViewData["Title"] = "Submission For New Team";
+  ViewData["Title"] = "Score Submission";
 }
-<div class="row">
-  <div class="col-md-6">
-    <div class="alert alert-info alert-dismissible" role="alert">
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <strong>Note!</strong> Score value can be whole or real decimal numbers (e.g. 4.8, 6, 9.5 etc.)
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">      
+      <form asp-action="Create">
+        <div class="form-group">
+          <label asp-for="Team" class="control-label font-weight-bold"></label>
+          <select asp-for="Team" class='form-control' asp-items="Model.Teams">
+            <option value="" selected>Please Select team...</option>
+          </select>
+          <span asp-validation-for="Team" class="text-danger"></span>
+        </div>
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+          <label asp-for="InnovationScore" class="control-label font-weight-bold"></label>
+          <input asp-for="InnovationScore" placeholder="Innovation Score" class="form-control" />
+          <span asp-validation-for="InnovationScore" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="UsefulnessScore" class="control-label font-weight-bold"></label>
+          <input asp-for="UsefulnessScore" placeholder="Usefulness (UI-UX / API) Score" class="form-control" />
+          <span asp-validation-for="UsefulnessScore" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="QualityScore" class="control-label font-weight-bold"></label>
+          <input asp-for="QualityScore" placeholder="Quality (Implementation) Score" class="form-control" />
+          <span asp-validation-for="QualityScore" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="CompanyValueScore" class="control-label font-weight-bold"></label>
+          <input asp-for="CompanyValueScore" placeholder="Value To Company Score" class="form-control" />
+          <span asp-validation-for="CompanyValueScore" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <label asp-for="PresentationScore" class="control-label font-weight-bold"></label>
+          <input asp-for="PresentationScore" placeholder="Pitching Score" class="form-control" />
+          <span asp-validation-for="PresentationScore" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+          <input id="submitscore" type="submit" value="Submit Score" class="btn btn-outline-success w-100" />
+        </div>
+      </form>
     </div>
-    <form asp-action="Create">
-      <div class="form-group">
-        <label asp-for="Team" class="control-label"></label>
-        <select asp-for="Team" class='form-control' asp-items="Model.Teams">
-          <option value="" selected>Please Select team...</option>
-        </select>
-        <span asp-validation-for="Team" class="text-danger"></span>
+
+    <div class="col-md-6">
+      <div class="alert alert-info alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <strong>Note!</strong> Score value can be whole or real decimal numbers (e.g. 4.8, 6, 9.5 etc.)
       </div>
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-      <div class="form-group">
-        <label asp-for="InnovationScore" class="control-label"></label>
-        <input asp-for="InnovationScore" placeholder="Innovation Score" class="form-control"/>
-        <span asp-validation-for="InnovationScore" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="UsefulnessScore" class="control-label"></label>
-        <input asp-for="UsefulnessScore" placeholder="Usefulness Score" class="form-control"/>
-        <span asp-validation-for="UsefulnessScore" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="QualityScore" class="control-label"></label>
-        <input asp-for="QualityScore" placeholder="Quality Score" class="form-control"/>
-        <span asp-validation-for="QualityScore" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="CompanyValueScore" class="control-label"></label>
-        <input asp-for="CompanyValueScore" placeholder="Value To Company Score" class="form-control"/>
-        <span asp-validation-for="CompanyValueScore" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <label asp-for="PresentationScore" class="control-label"></label>
-        <input asp-for="PresentationScore" placeholder="Presentation Score" class="form-control"/>
-        <span asp-validation-for="PresentationScore" class="text-danger"></span>
-      </div>
-      <div class="form-group">
-        <input id="submitscore" type="submit" value="Submit Score" class="btn btn-success"/> <a asp-action="Index">Back To Evaluations History</a>
-      </div>
-    </form>
-  </div>
-  
-  <div class="col-md-6">
-    <div class="alert alert-info" role="alert"><strong>Innovation Score:</strong> How original/unique the implementation is? How well did the app/idea execute upon the theme/category?</div>
-    <div class="alert alert-info" role="alert" id="usefulnesslabel"><strong>Usefulness Score:</strong> Is it intuitive and easy to use?</div>
-    <div class="alert alert-info" role="alert" id="qualitylabel"><strong>Quality Score:</strong> Did the app/idea work completely from start to finish? Did the team able to finish the features well given the time frame of the Hackathon? Scalability and Performance? Clean code and XP principles?</div>
-    <div class="alert alert-info" role="alert"><strong>Value To Company Score</strong> Does the app or idea add value to the company? Is it sustianable? Can it be further expanded?</div>
-    <div class="alert alert-info" role="alert"><strong>Presentation Score</strong> How well the app/idea explained to judges?</div>
+      <div class="alert alert-info" role="alert"><strong>Innovation Score:</strong> How original/unique the implementation is? How well did the app/idea execute upon the theme/category?</div>
+      <div class="alert alert-info" role="alert" id="usefulnesslabel"><strong>Usefulness (UI-UX/API) Score:</strong> Is it intuitive and easy to use? Has kept UX best practices in mind?</div>
+      <div class="alert alert-info" role="alert" id="qualitylabel"><strong>Quality (Implementation) Score:</strong> Did the app/idea work completely from start to finish? Did the team able to finish the features well given the time frame of the Hackathon? Scalability and Performance? Clean code and XP principles?</div>
+      <div class="alert alert-info" role="alert"><strong>Value To Company Score</strong> Does the app or idea add value to the company? Is it sustianable? Can it be further expanded?</div>
+      <div class="alert alert-info" role="alert"><strong>Presentation Score</strong> How well the app/idea explained to judges?</div>
+    </div>
   </div>
 </div>
 
-
 @section Scripts {
   @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-  <script>
-    $('#Team').change(function() {
-      var teamTxt = $("#Team option:selected").text();
-      var teamVal = $("#Team option:selected").val();
-
-      if (teamVal === "") {
-        $("#submitscore").val('Submit Score');
-        return;
-      }
-
-
-      $("#submitscore").val('Submit Score For ' + teamTxt);
-
-      var isVisualization = teamTxt.indexOf('Visualization') > -1;
-      var isMachineLearning = teamTxt.indexOf('MachineLeanring') > -1;
-      var isSecurity = teamTxt.indexOf('Security') > -1;
-
-      if (isVisualization) {
-        $("#usefulnesslabel").text(' Is it intuitive and easy to use? Has kept UX best practices in mind?');
-      } else {
-        $("#usefulnesslabel").text(' Is it intuitive and easy to use?');
-      }
-
-      if (isMachineLearning) {
-        $("#qualitylabel").text(
-          " Did the app/idea work completely from start to finish? Did the team able to finish the features well given the time frame of the Hackathon? Optimal feature set design and training algorithms? Scalability, Performance and code quality?");
-      } else if (isSecurity) {
-        $("#qualitylabel").text(
-          ' Did the app/idea work completely from start to finish? Did the team able to finish the goal well given the time frame of the Hackathon? Penetration/Vulnerability Assessment tools and types of loopholes detected?');
-      } else {
-        $("#qualitylabel").text(
-          "Did the app/idea work completely from start to finish? Did the team able to finish the features well given the time frame of the Hackathon? Scalability and Performance? Clean code and XP principles?");
-      }
-
-    })
-  </script>
 }

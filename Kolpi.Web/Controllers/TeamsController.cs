@@ -14,6 +14,8 @@ using Kolpi.Web.Constants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Kolpi.Enums;
+using System.Globalization;
+using Kolpi.Web.Models;
 
 namespace Kolpi.Web.Controllers
 {
@@ -56,8 +58,9 @@ namespace Kolpi.Web.Controllers
                     .Select(teamGroup => (teamGroup.Key, teamGroup.Count(),
                         teamGroup.Select(z => z.TeamName).ToList())).ToList(),
                 AllParticipants = teams.SelectMany(x => x.Participants.Select(y => TeamViewModel.SerializeParticipant(y))).ToList(),
-                AllTeams = teams.Select(x => TeamViewModel.SerializeTeam(x)).ToList()
-                
+                AllTeams = teams.Select(x => TeamViewModel.SerializeTeam(x)).ToList(),
+                TeamRequirements = teams.Select(x => (x.TeamName, x.ITRequirements, x.OtherRequirements)).ToList()
+
             };
 
             //Count selected themes eagerly, we are adding not chosen ones to same list
@@ -69,17 +72,15 @@ namespace Kolpi.Web.Controllers
             foreach (var themeNotChosen in themesNotChosen)
             {
                 analytics.TeamsByTheme.Add((Theme: Enum.Parse<Theme>(themeNotChosen), TeamCount: 0, TeamList: null));
-            }
+            }            
 
             return View(analytics);
         }
 
         public IActionResult Create()
         {
-            if (DateTime.Now > DateTime.Parse("Sep 18, 2018 16:00:00 PM"))
-            {
-                return RedirectToAction("Error", "Home", new { errorCode = "Registration", message = "Team registration expired." });
-            }
+            if(DateTime.Now > DateTime.Parse("Sep 25, 2018 16:00:00 PM"))
+                return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired." });
 
             ViewData["locations"] = FetchEventLocationSelectItemList();
             return View();
@@ -91,6 +92,9 @@ namespace Kolpi.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TeamName,Avatar,Theme,ProblemStatement,ITRequirements,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
         {
+            if (teamViewModel.Location.Equals("Kathmandu", StringComparison.InvariantCultureIgnoreCase))
+                return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired for Nepal center." });
+
             if (ModelState.IsValid)
             {
                 if (!ParticipantsEnteredCorrectly(teamViewModel.Participants))
@@ -185,7 +189,7 @@ namespace Kolpi.Web.Controllers
                     _context.Entry(team).Property(p => p.Location).IsModified = true;
 
                     //Only flag as modified if user uploads something
-                    if(team?.Avatar?.Length > 0)
+                    if (team?.Avatar?.Length > 0)
                         _context.Entry(team).Property(p => p.Avatar).IsModified = true;
 
                     await _context.SaveChangesAsync();
@@ -232,7 +236,7 @@ namespace Kolpi.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string identifier)
         {
-            var team = await _context.Teams.FirstOrDefaultAsync(x => x.TeamCode.Equals(identifier));            
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.TeamCode.Equals(identifier));
             await _context.Entry(team).Collection(t => t.Participants).LoadAsync();
 
             _context.Teams.Remove(team);
@@ -256,10 +260,10 @@ namespace Kolpi.Web.Controllers
             foreach (var participant in participants)
             {
                 var properties = participant.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                //User required to enter exact 5 comma separated values for each participant
-                if (properties.Length != 5)
+                //User required to enter exact 3 comma separated values for each participant
+                if (properties.Length != 3)
                 {
-                    ModelState.AddModelError("Participants", $"Please enter participants exactly as example says. Each participant in new line and have exactly 5 values separated by commas. Btw, '{participant}' causing this error.");
+                    ModelState.AddModelError("Participants", $"Please enter participants exactly as example says. Each participant in new line and have exactly 3 values separated by commas. Btw, '{participant}' causing this error.");
                     return false;
                 }
             }

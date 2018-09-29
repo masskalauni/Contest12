@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Kolpi.Enums;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.IO;
 
 namespace Kolpi.Models.ScoreCard
@@ -48,7 +46,9 @@ namespace Kolpi.Models.ScoreCard
         public Theme Theme { get; set; }
         public string ProblemStatement { get; set; }
         public string RepoUrl { get; set; }        
-        public float FinalScoreEarned { get; set; }
+        public float InnovationScore { get; set; }
+        public float ImplementationScore { get; set; }
+        public float PeoplesChoiceScore { get; set; }
         public string ITRequirements { get; set; }
         public string OtherRequirements { get; set; }
         public string Location { get; set; } = "Kathmandu";

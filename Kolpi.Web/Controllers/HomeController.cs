@@ -15,12 +15,9 @@ namespace Kolpi.Web.Controllers
             return View();
         }
 
-        public IActionResult Error(string errorCode, string message)
+        public IActionResult Error(ErrorViewModel errorViewModel)
         {
-            if (errorCode == "Duplicate Record")
-                return View(new ErrorViewModel { ErrorCode = errorCode, Message = message });
-
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorViewModel { ErrorCode = errorViewModel.ErrorCode, Message = errorViewModel.Message, RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

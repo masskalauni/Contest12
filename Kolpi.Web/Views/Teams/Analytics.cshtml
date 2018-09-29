@@ -12,6 +12,8 @@
     <h1 class="display-4 text-success">Total participants<a href="#all_participants" class="float-right text-primary">@Model.TotalParticipants</a> </h1>
     <hr class="my-4">
     <h1 class="display-4 text-success">Total themes selected<span class="float-right text-primary">@Model.ThemesSelectedCount</span></h1>
+    <hr class="my-4">
+    <h1 class="display-4 text-success">Teams requirements<a href="#all_requirements" class="float-right text-primary">See Here</a></h1>
 
     <hr class="my-4">
     <h1 class="display-4 text-success">Teams by theme</h1>
@@ -101,5 +103,19 @@
         <li class="list-group-item list-group-item-secondary text-info"><span class="font-weight-bold text-success">@(i + 1).</span> @Model.AllParticipants[i]</li>
       }
     </ol>
+
+    <h1 class="display-4 text-success mt-4">Team requirements</h1>
+    <div class="list-group" id="all_requirements">
+      @for (int i = 0; i < Model.TeamRequirements.Count; i++)
+      {
+        <div class="list-group-item flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 text-success">@(i + 1). @Model.TeamRequirements[i].Team</h5>
+          </div>
+          <p class="mb-1 text-info"><span class="font-weight-bold">IT - </span>@(Model.TeamRequirements[i].IT ?? "None")</p>
+          <p class="mb-1 text-info"><span class="font-weight-bold">Other - </span>@(Model.TeamRequirements[i].Other ?? "None")</p>
+        </div>
+      }
+    </div>
   </div>
 </div>

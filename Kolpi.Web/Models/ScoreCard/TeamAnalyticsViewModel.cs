@@ -1,8 +1,5 @@
 ﻿using Kolpi.Enums;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Kolpi.Models.ScoreCard
 {
@@ -15,5 +12,6 @@ namespace Kolpi.Models.ScoreCard
         public List<(string Location, int TeamCount, List<string> TeamList)> TeamsByLocation { get; set; }
         public List<string> AllParticipants { get; set; }
         public List<string> AllTeams { get; set; }
+        public List<(string Team, string IT, string Other)> TeamRequirements { get; set; }
     }
 }

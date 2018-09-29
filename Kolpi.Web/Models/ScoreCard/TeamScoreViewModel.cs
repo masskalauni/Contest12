@@ -1,18 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Kolpi.Data;
-using Kolpi.Enums;
 
 namespace Kolpi.Models.ScoreCard
 {
     public class TeamScoreViewModel
     {
         public int Id { get; set; }
-        public List<SelectListItem> Teams { get; } = Data.Teams.All
-            .Select(x => new SelectListItem { Value = x.TeamCode, Text = $"{x.TeamName} ( {x.Theme.ToString()} )" }).ToList();
+        public List<SelectListItem> Teams { get; set; }            
 
         [DisplayName("Participating Team"), Required(ErrorMessage = "Team should be chosen to submit team score.")]
         public string Team { get; set; }
@@ -23,13 +19,13 @@ namespace Kolpi.Models.ScoreCard
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? InnovationScore { get; set; }
 
-        [DisplayName("Usefulness Score")]
+        [DisplayName("Usefulness (UI-UX / API) Score")]
         [Required(ErrorMessage = "Score for 'Usefulness' criteria is required.")]
         [Range(1.0, 10.0, ErrorMessage = "Score rating should be in range 0.0-10.0")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? UsefulnessScore { get; set; }
 
-        [DisplayName("Quality Score")]
+        [DisplayName("Quality (Implementation) Score")]
         [Required(ErrorMessage = "Score for 'Quality' criteria is required.")]
         [Range(1.0, 10.0, ErrorMessage = "Score rating should be in range 0.0-10.0")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
@@ -59,12 +55,7 @@ namespace Kolpi.Models.ScoreCard
                     return 0.0f;
                 }
 
-                return (WeightDictionary.ThemeWeights[team.Theme][JudgingCriteria.Innovation] * InnovationScore
-                        + WeightDictionary.ThemeWeights[team.Theme][JudgingCriteria.UsefulNess] * UsefulnessScore
-                        + WeightDictionary.ThemeWeights[team.Theme][JudgingCriteria.Quality] * QualityScore
-                        + WeightDictionary.ThemeWeights[team.Theme][JudgingCriteria.ValueToCompany] * CompanyValueScore
-                        + WeightDictionary.ThemeWeights[team.Theme][JudgingCriteria.Presentation] * PresentationScore) /
-                       100;
+                return 0.0f;
             }
             set { }
         }
@@ -80,7 +71,7 @@ namespace Kolpi.Models.ScoreCard
             QualityScore = teamScore.QualityScore;
             CompanyValueScore = teamScore.CompanyValueScore;
             PresentationScore = teamScore.PresentationScore;
-            WeightedAverageScore = teamScore.WeightedAverageScore;
+            WeightedAverageScore = teamScore.InnovationAverageScore;
             Team = teamScore.Team.TeamName;
             if (teamScore.KolpiUser == null) return;
 
