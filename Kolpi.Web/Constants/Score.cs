@@ -2,10 +2,10 @@
 {
     public class Score
     {
-        public const int RankOne = 6;
-        public const int RankTwo = 5;
-        public const int RankThree = 4;
-        public const int RankFour = 3;
-        public const int RankFive = 2;       
+        public const int RankOne = 12;
+        public const int RankTwo = 10;
+        public const int RankThree = 8;
+        public const int RankFour = 6;
+        public const int RankFive = 4;       
     }
 }
