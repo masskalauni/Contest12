@@ -1,74 +1,84 @@
-﻿@model IEnumerable<Kolpi.Models.ScoreCard.TeamScoreViewModel>
+﻿@model IEnumerable<Kolpi.Models.Score.JudgeScoreViewModel>
 @{
     ViewData["Title"] = "Team Score";
-    short sn = 1;
+    int sn = 0;
+
 }
-<p>
-  <h4 class="pull-left text-uppercase text-info"><strong>Your Evaluations So Far</strong></h4>
-  <a asp-action="Create" class="btn btn-success pull-right">Evaluate New Team</a>
-</p>
+<div class="row">
+  <div class="col"><a asp-action="Create" class="btn btn-outline-info float-right mb-2"><ion-icon name="add" class="align-middle"></ion-icon> <span class="align-middle font-weight-bold">Evaluate New Team</span></a></div>
+</div>
 
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>SN</th>
-      <th class="col-md-2">
-        @Html.DisplayNameFor(model => model.Team)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.InnovationScore)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.UsefulnessScore)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.QualityScore)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.CompanyValueScore)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.PresentationScore)
-      </th>
-      <th>
-        @Html.DisplayNameFor(model => model.WeightedAverageScore)
-      </th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var item in Model)
-    {
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-sm">
+    <thead class="thead-dark">
       <tr>
-        <td><strong>@(sn++)</strong></td>
-        <td>
-          @Html.DisplayFor(modelItem => item.Team)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.InnovationScore)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.UsefulnessScore)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.QualityScore)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.CompanyValueScore)
-        </td>
-        <td>
-          @Html.DisplayFor(modelItem => item.PresentationScore)
-        </td>
-        <td>
-          <strong>@Html.DisplayFor(modelItem => item.WeightedAverageScore)</strong>
-        </td>
-        <td class="col-md-2 text-center">
-          <a asp-action="Edit" asp-route-id="@item.Id" class="text-warning text-uppercase"><strong>Edit</strong></a>&nbsp;
-          <a asp-action="Delete" asp-route-id="@item.Id" class="text-danger text-uppercase"><strong>Remove</strong></a>
-        </td>
+        <th scope="col"></th>
+        <th scope="col">#</th>
+        <th scope="col">
+          @Html.DisplayNameFor(model => model.Team)
+        </th>
+        <th scope="col">
+          @Html.DisplayNameFor(model => model.InnovationScore)
+        </th>
+        <th scope="col">
+          @Html.DisplayNameFor(model => model.UsefulnessScore)
+        </th>
+        <th scope="col">
+          @Html.DisplayNameFor(model => model.QualityScore)
+        </th>
+        <th scope="col">
+          @Html.DisplayNameFor(model => model.CompanyValueScore)
+        </th>
+        <th scope="col">
+          @Html.DisplayNameFor(model => model.PresentationScore)
+        </th>
+        <th scope="col">
+          WBIS
+        </th>
+        <th scope="col">
+          WBTIS
+        </th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @foreach (var item in Model)
+      {
+        <tr>
+          <td scope="row">
+            <a asp-action="Edit" asp-route-id="@item.Id" class="text-warning"><ion-icon name="create"></ion-icon></a>
+          </td>
+          <td scope="row">
+            @(++sn)
+          </td>
+          <td>
+            <strong>@Html.DisplayFor(modelItem => item.Team)</strong>
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.InnovationScore)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.UsefulnessScore)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.QualityScore)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.CompanyValueScore)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.PresentationScore)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.BestIdeaScore)
+          </td>
+          <td>
+            @Html.DisplayFor(modelItem => item.BestTechnicalImplementationScore)
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <p><b>WBIS</b> - @Html.DisplayNameFor(model => model.BestIdeaScore)</p>
+  <p><b>WBTIS</b> - @Html.DisplayNameFor(model => model.BestTechnicalImplementationScore)</p>
 
-<p class="text-warning"><strong>Note:</strong> Final weighted avergae is not just a bare average of five scores. Its calculated on the basis of weights given to individual criterias for particular theme statement.</p>
+</div>

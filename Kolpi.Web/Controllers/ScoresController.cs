@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Kolpi.Models.ScoreCard;
-using Kolpi.Web.Models;
+using Kolpi.Models.Score;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,9 +23,9 @@ namespace Kolpi.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var teamScores = _context.TeamScores.Include(t => t.Team).Where(x => x.KolpiUserId == me);
+            var teamScores = _context.JudgeScores.Include(t => t.Team).Where(x => x.KolpiUserId == me);
             var scoreList = await teamScores.ToListAsync();
-            return View(scoreList.Select(x => new TeamScoreViewModel(x)));
+            return View(scoreList.Select(x => new JudgeScoreViewModel(x)));
         }
 
         public async Task<IActionResult> Create()
@@ -35,26 +33,28 @@ namespace Kolpi.Web.Controllers
             var teams = await _context.Teams.ToListAsync();
             var teamSelectlist = teams.Select(x => new SelectListItem { Value = x.TeamCode, Text = $"{x.TeamName} ( {x.Theme.ToString()} )" }).ToList();
 
-            var model = new TeamScoreViewModel { Teams = teamSelectlist };
+            var model = new JudgeScoreViewModel { Teams = teamSelectlist };
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,InnovationScore,UsefulnessScore,QualityScore,CompanyValueScore,PresentationScore,Team")] TeamScoreViewModel teamScoreViewModel)
+        public async Task<IActionResult> Create([Bind("Id,InnovationScore,UsefulnessScore,QualityScore,CompanyValueScore,PresentationScore,Team")] JudgeScoreViewModel teamScoreViewModel)
         {
             if (ModelState.IsValid)
             {
                 var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 //If user already inserted score for this team, don't reinsert inform them
-                var record = _context.TeamScores.Where(x => x.Team.TeamCode == teamScoreViewModel.Team && x.KolpiUserId == me).ToList();
+                var record = await _context.JudgeScores.Where(x => x.Team.TeamCode == teamScoreViewModel.Team && x.KolpiUserId == me).ToListAsync();
+                var team = await _context.Teams.FirstAsync(x => x.TeamCode.Equals(teamScoreViewModel.Team));
 
                 if (record.Any())
-                    return RedirectToAction(nameof(HomeController.Error), "Home", new { errorCode = "Duplicate Record", message = $"You aleady evaluated team: {Teams.Find(teamScoreViewModel.Team).TeamName}. Please update their score if you wish to." });
+                    return RedirectToAction(nameof(HomeController.Error), "Home", new { errorCode = "Duplicate Record", message = $"You aleady evaluated team: {team.TeamName}. Please update their score if you wish to." });
 
-                var teamScore = new TeamScore(teamScoreViewModel)
+                var teamScore = new JudgeScore(teamScoreViewModel)
                 {
-                    KolpiUserId = me
+                    KolpiUserId = me,
+                    Team = team
                 };
 
                 _context.Add(teamScore);
@@ -68,7 +68,7 @@ namespace Kolpi.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> EditAsync(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             //return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "You can't edit scores since 2017-11-30 11:30 AM, all judges already concluded rankings." });
 
@@ -77,19 +77,20 @@ namespace Kolpi.Web.Controllers
                 return NotFound();
             }
 
-            var teamScore = await _context.TeamScores.Include(x => x.Team).SingleOrDefaultAsync(m => m.Id == id);
+            var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var teamScore = await _context.JudgeScores.Include(x => x.Team).SingleOrDefaultAsync(m => m.Id == id && m.KolpiUserId == me);
             if (teamScore == null)
             {
                 return NotFound($"Record with id {id} does not exist in store.");
             }
 
-            var teamScoreViewModel = new TeamScoreViewModel(teamScore);
+            var teamScoreViewModel = new JudgeScoreViewModel(teamScore);
             return View(teamScoreViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, TeamScoreViewModel teamScoreViewModel)
+        public async Task<IActionResult> Edit(int id, JudgeScoreViewModel teamScoreViewModel)
         {
             if (id != teamScoreViewModel.Id)
             {
@@ -100,7 +101,7 @@ namespace Kolpi.Web.Controllers
             {
                 try
                 {
-                    var teamScore = _context.TeamScores.Find(id);
+                    var teamScore = _context.JudgeScores.Find(id);
                     var entity = _context.Attach(teamScore);
                     entity.Entity.Id = id;
                     entity.Entity.InnovationScore = teamScoreViewModel.InnovationScore.Value;
@@ -108,7 +109,6 @@ namespace Kolpi.Web.Controllers
                     entity.Entity.CompanyValueScore = teamScoreViewModel.CompanyValueScore.Value;
                     entity.Entity.PresentationScore = teamScoreViewModel.PresentationScore.Value;
                     entity.Entity.QualityScore = teamScoreViewModel.QualityScore.Value;
-                    entity.Entity.InnovationAverageScore = teamScoreViewModel.WeightedAverageScore.Value;
 
                     await _context.SaveChangesAsync();
                 }
@@ -125,7 +125,7 @@ namespace Kolpi.Web.Controllers
             return View(teamScoreViewModel);
         }
 
-        public async Task<IActionResult> DeleteAsync(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             //return View("Error", new ErrorViewModel { ErrorCode = "Score Delete Disabled", Message = "You can't delete scores since 2017-11-30 11:30 AM, all judges already concluded rankings." });
 
@@ -134,7 +134,7 @@ namespace Kolpi.Web.Controllers
                 return NotFound();
             }
 
-            var teamScore = await _context.TeamScores
+            var teamScore = await _context.JudgeScores
                 .Include(t => t.Team)
                 .SingleOrDefaultAsync(m => m.Id == id);
             if (teamScore == null)
@@ -142,15 +142,15 @@ namespace Kolpi.Web.Controllers
                 return NotFound();
             }
 
-            return View(new TeamScoreViewModel(teamScore));
+            return View(new JudgeScoreViewModel(teamScore));
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var teamScore = await _context.TeamScores.SingleOrDefaultAsync(m => m.Id == id);
-            _context.TeamScores.Remove(teamScore);
+            var teamScore = await _context.JudgeScores.SingleOrDefaultAsync(m => m.Id == id);
+            _context.JudgeScores.Remove(teamScore);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
@@ -163,7 +163,7 @@ namespace Kolpi.Web.Controllers
 
         private bool TeamExists(int id)
         {
-            return _context.TeamScores.Any(e => e.Id == id);
+            return _context.JudgeScores.Any(e => e.Id == id);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model Kolpi.Models.ScoreCard.TeamScoreViewModel
+﻿@model Kolpi.Models.Score.JudgeScoreViewModel
 
 @{
     ViewData["Title"] = "Delete Score Submission";
@@ -38,12 +38,6 @@
         </dt>
         <dd>
             @Html.DisplayFor(model => model.PresentationScore)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.WeightedAverageScore)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.WeightedAverageScore)
         </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Team)

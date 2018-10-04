@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Kolpi.Models.ScoreCard
+namespace Kolpi.Models.Score
 {
-    public class TeamScore
+    public class JudgeScore
     {
-        public TeamScore() { }
-        public TeamScore(TeamScoreViewModel teamScoreViewModel)
+        public JudgeScore() { }
+        public JudgeScore(JudgeScoreViewModel teamScoreViewModel)
         {
             Id = teamScoreViewModel.Id;
             InnovationScore = teamScoreViewModel.InnovationScore.Value;
@@ -13,10 +13,6 @@ namespace Kolpi.Models.ScoreCard
             QualityScore = teamScoreViewModel.QualityScore.Value;
             CompanyValueScore = teamScoreViewModel.CompanyValueScore.Value;
             PresentationScore = teamScoreViewModel.PresentationScore.Value;
-
-            var teamCode = teamScoreViewModel.Team;
-            InnovationAverageScore = teamScoreViewModel.WeightedAverageScore.Value;
-            Team = Data.Teams.Find(teamCode);
         }
 
         public int Id { get; set; }
@@ -25,8 +21,6 @@ namespace Kolpi.Models.ScoreCard
         public float QualityScore { get; set; }
         public float CompanyValueScore { get; set; }
         public float PresentationScore { get; set; }
-        public float InnovationAverageScore { get; set; }
-        public float ImplementationAverageScore { get; set; }
 
         public string KolpiUserId { get; set; }
         public IdentityUser KolpiUser { get; set; }
