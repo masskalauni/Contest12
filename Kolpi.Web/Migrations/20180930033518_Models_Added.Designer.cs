@@ -4,14 +4,16 @@ using Kolpi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kolpi.Web.Migrations
 {
     [DbContext(typeof(KolpiDbContext))]
-    partial class KolpiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20180930033518_Models_Added")]
+    partial class Models_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,7 +93,7 @@ namespace Kolpi.Web.Migrations
 
                     b.Property<string>("OrderTwoTeam");
 
-                    b.Property<string>("UserId");
+                    b.Property<string>("UserMail");
 
                     b.HasKey("Id");
 

@@ -1,0 +1,86 @@
+﻿@model Kolpi.Models.Score.ParticipantVoteViewModel
+@{
+  ViewData["Title"] = "Team Votes";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div class="alert alert-primary alert-dismissible fade show text-center" role="alert">
+        <h4>Welcome to VHackathon People's Choice Award</h4>  
+        <h5>Please rank your top five team outputs.</h5><p class="text-danger"> Individual votes and final result will be published publicly across organization.</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <form asp-action="VoteTeams">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row my-2">
+      <div class="col-1">
+        <div class="badge-dark text-center"><h1 class="text-light">1</h1></div>
+      </div>
+      <div class="col">
+        <select asp-for="OrderOneTeam" class='custom-select-lg w-100' asp-items="Model.Teams">
+          <option value="" selected>Select Your Top Team...</option>
+        </select>
+        <span asp-validation-for="OrderOneTeam" class="text-danger"></span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-1">
+        <div class="badge-dark text-center"><h1 class="text-light">2</h1></div>
+      </div>
+      <div class="col">
+        <select asp-for="OrderTwoTeam" class='custom-select-lg w-100' asp-items="Model.Teams">
+          <option value="" selected>Select Your Second Team...</option>
+        </select>
+        <span asp-validation-for="OrderTwoTeam" class="text-danger"></span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-1">
+        <div class="badge-dark text-center"><h1 class="text-light">3</h1></div>
+      </div>
+      <div class="col">
+        <select asp-for="OrderThreeTeam" class='custom-select-lg w-100' asp-items="Model.Teams">
+          <option value="" selected>Select Your Third Team...</option>
+        </select>
+        <span asp-validation-for="OrderThreeTeam" class="text-danger"></span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-1">
+        <div class="badge-dark text-center"><h1 class="text-light">4</h1></div>
+      </div>
+      <div class="col">
+        <select asp-for="OrderFourTeam" class='custom-select-lg w-100' asp-items="Model.Teams">
+          <option value="" selected>Select Your Fourth Team...</option>
+        </select>
+        <span asp-validation-for="OrderFourTeam" class="text-danger"></span>
+      </div>
+    </div>
+    <div class="row mb-2">
+      <div class="col-1">
+        <div class="badge-dark text-center"><h1 class="text-light">5</h1></div>
+      </div>
+      <div class="col">
+        <select asp-for="OrderFiveTeam" class='custom-select-lg w-100' asp-items="Model.Teams">
+          <option value="" selected>Select Your Fifth Team...</option>
+        </select>
+        <span asp-validation-for="OrderFiveTeam" class="text-danger"></span>
+      </div>
+    </div>
+    <div>
+      <input type="submit" class="btn btn-outline-success btn-lg w-100" value="Submit Votes" />
+    </div>
+  </form>
+</div>
+
+
+@section Scripts {
+  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

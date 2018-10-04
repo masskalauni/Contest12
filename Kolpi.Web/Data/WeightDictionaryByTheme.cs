@@ -4,7 +4,7 @@ using Kolpi.Enums;
 
 namespace Kolpi.Data
 {
-    public static class WeightDictionary
+    public static class WeightDictionaryByTheme
     {
         public static Dictionary<Enum, Dictionary<Enum, byte>> ThemeWeights => new Dictionary<Enum, Dictionary<Enum, byte>>
         {

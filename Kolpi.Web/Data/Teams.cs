@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Kolpi.Models.ScoreCard;
+using Kolpi.Models.Score;
 using Kolpi.Enums;
 
 namespace Kolpi.Data

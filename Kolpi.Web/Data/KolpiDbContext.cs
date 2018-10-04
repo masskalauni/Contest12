@@ -1,4 +1,4 @@
-﻿using Kolpi.Models.ScoreCard;
+﻿using Kolpi.Models.Score;
 using Kolpi.Models.Survey;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -13,7 +13,8 @@ namespace Kolpi.Data
         {
         }
 
-        public DbSet<TeamScore> TeamScores { get; set; }
+        public DbSet<JudgeScore> JudgeScores { get; set; }
+        public DbSet<ParticipantVote> ParticipantVotes { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }

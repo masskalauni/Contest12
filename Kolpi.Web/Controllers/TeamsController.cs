@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Kolpi.Data;
-using Kolpi.Models.ScoreCard;
+using Kolpi.Models.Score;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ using Kolpi.Web.Constants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Kolpi.Enums;
-using System.Globalization;
 using Kolpi.Web.Models;
 
 namespace Kolpi.Web.Controllers
@@ -79,8 +78,8 @@ namespace Kolpi.Web.Controllers
 
         public IActionResult Create()
         {
-            if(DateTime.Now > DateTime.Parse("Sep 25, 2018 16:00:00 PM"))
-                return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired." });
+            //if(DateTime.Now > DateTime.Parse("Sep 25, 2018 16:00:00 PM"))
+            //    return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired." });
 
             ViewData["locations"] = FetchEventLocationSelectItemList();
             return View();

@@ -1,9 +1,11 @@
-﻿@model Kolpi.Models.ScoreCard.ResultViewModel
+﻿@model Kolpi.Models.Result.FinalResultViewModel
 
 @{
   ViewData["Title"] = "Result Section";
-  var teamScores = Model.TeamScores;
-  var teamResult = Model.Teams;
+  var teamScores = Model.JudgesScores;
+  var teamResult = Model.BestIdeaTeams;
+  var bestImplementationTeams = Model.BestImplementationTeams;
+  var peoplesChoiceTeams = Model.PeoplesChoiceTeams;
   int sn = 1;
 }
 
@@ -26,7 +28,6 @@
           <th>Quality Score</th>
           <th>CompanyValue Score</th>
           <th>Presentation Score</th>
-          <th>Weighted Average Score</th>
         </tr>
         </thead>
         <tbody>
@@ -55,9 +56,6 @@
             <td>
               @Html.DisplayFor(modelItem => item.PresentationScore)
             </td>
-            <td>
-              <strong>@Html.DisplayFor(modelItem => item.WeightedAverageScore)</strong>
-            </td>
           </tr>
         }
         </tbody>
@@ -75,7 +73,7 @@
           @for (int i = 0; i < teamResult.Count; i++)
           {
             var teamName = teamResult[i].TeamName;
-            var teamScore = $"{teamResult[i].FinalScoreEarned:0.000}";
+            var teamScore = $"{teamResult[i].AverageBestIdeaScore:0.000}";
             var theme = teamResult[i].Theme.ToString();
 
             if (i > 0 && i % 3 == 0)
@@ -111,3 +109,4 @@
     </div>
   </div>
 </div>
+@*<div class="display-4 text-center">Feature implementation in progress...</div>*@
