@@ -97,7 +97,7 @@ namespace Kolpi.Web.Controllers
 
                 if (votes.Distinct().Count() != votes.Count)
                 {
-                    ModelState.AddModelError("", $"Dropdown team selection must be unique. You can't make single team take multiple positions, or do you?");
+                    ModelState.AddModelError("", $"You can't make same team take multiple ranks, or do you? Team selection on individual dropdown must be unique.");
                     voteViewModel.Teams = await GetTeamsSelectList();
                     return View(voteViewModel);
                 }

@@ -34,31 +34,29 @@ namespace Kolpi.Web
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+           
+            services.AddDbContext<KolpiDbContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")));
 
-            services.Configure<IdentityOptions>(options =>
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 // Custom Password settings.
+                options.Password.RequiredLength = 4;
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 4;
                 options.Password.RequiredUniqueChars = 1;
-            });
-
-            services.AddDbContext<KolpiDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")));
-
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<KolpiDbContext>()
-                .AddDefaultTokenProviders();
+            })
+            .AddEntityFrameworkStores<KolpiDbContext>()
+            .AddDefaultTokenProviders();
 
             services.AddAuthentication()
                 .AddGoogle(googleOptions =>
                 {
                     googleOptions.ClientId = "1098909678334-j9hktlgauqctf712m8fv08vddm560jot.apps.googleusercontent.com";
                     googleOptions.ClientSecret = "8vrbe318_KysX4yEA-MhD21f";
-                    
+
                 })
                 .AddMicrosoftAccount(microsoftOptions =>
                 {
@@ -135,7 +133,7 @@ namespace Kolpi.Web
             foreach (var admin in admins)
             {
                 var user = await userManager.FindByNameAsync(admin);
-                
+
                 //user has not registered yet, go for other one
                 if (user == null)
                     continue;

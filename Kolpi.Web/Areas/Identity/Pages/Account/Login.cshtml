@@ -42,7 +42,8 @@
       <section>
         <h5>Or sign in with</h5>
         <hr />
-        @{
+        <h5 class="text-danger">External authentication schemes are disabled.</h5>
+        @*@{
           if ((Model.ExternalLogins?.Count ?? 0) == 0)
           {
             <h3>No external authentication services configured.</h3>
@@ -60,7 +61,7 @@
               </div>
             </form>
           }
-        }
+        }*@
       </section>
     </div>
   </div>
