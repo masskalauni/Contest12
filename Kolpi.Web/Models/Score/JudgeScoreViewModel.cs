@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using Kolpi.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Kolpi.Models.Score
@@ -12,6 +14,10 @@ namespace Kolpi.Models.Score
 
         [DisplayName("Team"), Required(ErrorMessage = "Team should be chosen to submit team score.")]
         public string Team { get; set; }
+
+        public Theme Theme { get; set; }
+
+        public string Participants { get; set; }
 
         [DisplayName("Innovation")]
         [Required(ErrorMessage = "Score for 'Innovation' criteria is required.")]
@@ -68,6 +74,8 @@ namespace Kolpi.Models.Score
             CompanyValueScore = judgeScore.CompanyValueScore;
             PresentationScore = judgeScore.PresentationScore;
             Team = judgeScore.Team.TeamName;
+            Theme = judgeScore.Team.Theme;
+            Participants = string.Join(",", judgeScore.Team.Participants.ToList().Select(s => s.Name));
 
             var userName = judgeScore.KolpiUser?.UserName;
             userName = userName?.Substring(0, userName.IndexOf('@'));

@@ -1,112 +1,108 @@
 ﻿@model Kolpi.Models.Result.FinalResultViewModel
 
 @{
-  ViewData["Title"] = "Result Section";
-  var teamScores = Model.JudgesScores;
-  var teamResult = Model.BestIdeaTeams;
-  var bestImplementationTeams = Model.BestImplementationTeams;
-  var peoplesChoiceTeams = Model.PeoplesChoiceTeams;
-  int sn = 1;
+    ViewData["Title"] = "Result Section";
+    var judges = Model.JudgesScores.Select(x => System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(x.Judge)).Distinct().ToList();
+    var bestIdeaTeams = Model.TeamsScores.OrderByDescending(x => x.AverageBestIdeaScore).ToList();
+    var bestImplementationTeams = Model.TeamsScores.OrderByDescending(x => x.AverageBestImplementationScore).ToList();
+    var peoplesChoiceTeams = Model.PeoplesChoiceRanks;
+    int sn = 1;
 }
 
-<div>
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation"><a href="#allscores" aria-controls="allscores" role="tab" data-toggle="tab">All Scores From Judges</a></li>
-    <li role="presentation"><a href="#result" aria-controls="result" role="tab" data-toggle="tab" class="active">Here We Are, Champion Is Here!</a></li>
-  </ul>
-  <div class="tab-content">
-    
-    <div role="tabpanel" class="tab-pane fade" id="allscores">
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>SN</th>
-          <th>Judge</th>
-          <th>Team</th>
-          <th>Innovation Score</th>
-          <th>Usefulness Score</th>
-          <th>Quality Score</th>
-          <th>CompanyValue Score</th>
-          <th>Presentation Score</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in teamScores)
-        {
-          <tr>
-            <td><strong>@(sn++)</strong></td>
-            <td class="text-capitalize col-md-2">
-              @Html.DisplayFor(modelItem => item.Judge)
-            </td>
-            <td class="text-uppercase col-md-2">
-              @Html.DisplayFor(modelItem => item.Team)
-            </td>
-            <td>
-              @Html.DisplayFor(modelItem => item.InnovationScore)
-            </td>
-            <td>
-              @Html.DisplayFor(modelItem => item.UsefulnessScore)
-            </td>
-            <td>
-              @Html.DisplayFor(modelItem => item.QualityScore)
-            </td>
-            <td>
-              @Html.DisplayFor(modelItem => item.CompanyValueScore)
-            </td>
-            <td>
-              @Html.DisplayFor(modelItem => item.PresentationScore)
-            </td>
-          </tr>
-        }
-        </tbody>
-      </table>
-      @if (teamResult.Any() && !teamScores.Any())
+<ul class="nav nav-pills mb-2" id="v-pills-tab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="h-judges-tab" data-toggle="pill" href="#h-judges" role="tab" aria-controls="h-judges" aria-selected="true">Judge Panel</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="v-best-idea-result-tab" data-toggle="pill" href="#v-best-idea-result" role="tab" aria-controls="v-best-idea-result" aria-selected="false">Best Idea Ranking</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="v-best-impl-result-tab" data-toggle="pill" href="#v-best-impl-result" role="tab" aria-controls="v-best-impl-result" aria-selected="false">Best Implementation Ranking</a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" id="v-peoples-choice-tab" data-toggle="pill" href="#v-peoples-choice" role="tab" aria-controls="v-peoples-choice" aria-selected="false">People's Choice Ranking</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="v-pills-tabContent">
+  <div class="tab-pane fade show active" id="h-judges" role="tabpanel" aria-labelledby="h-judges-tab">
+    <ul class="list-group list-group-flush">
+      @foreach (var judgeName in judges)
       {
-        <h3>Common score sheet from all judges is restricted.</h3>
+        <li class="list-group-item font-weight-bold"><span>@(sn++).</span> @judgeName</li>
       }
-      <p class="text-warning"><strong>Note:</strong> Final weighted avergae is not just a bare average of five scores. Its calculated on the basis of weights given to individual criterias for particular theme statement.</p>
-    </div>
+    </ul>
+  </div>
+  <div class="tab-pane fade pt-2 border border-warning" id="v-best-idea-result" role="tabpanel" aria-labelledby="v-best-idea-result-tab">
+    <div class="row">
+      @for (int i = 0; i < bestIdeaTeams.Count; i++)
+      {
+        var teamName = bestIdeaTeams[i].TeamName;
+        var teamScore = $"{bestIdeaTeams[i].AverageBestIdeaScore:0.000}";
+        var theme = bestIdeaTeams[i].Theme.ToString();
+        var participants = bestIdeaTeams[i].Participants;
+        var title = $"{theme} - {participants}";
 
-    <div role="tabpanel" class="tab-pane fade in active" id="result">
-      <div class="container-fluid">
-        <div class="row">
-          @for (int i = 0; i < teamResult.Count; i++)
+        
+        <div class="col-md-4 text-center mb-4">
+          @if (i == 0)
           {
-            var teamName = teamResult[i].TeamName;
-            var teamScore = $"{teamResult[i].AverageBestIdeaScore:0.000}";
-            var theme = teamResult[i].Theme.ToString();
-
-            if (i > 0 && i % 3 == 0)
-            {
-              @:</div><div class="row">
-              if(i==3){ <hr/>}
-            }
-     
-            <div class="col-md-4 text-center">
-              @if (i == 0)
-              {
-                <img src="/images/goldmedal.png" alt="Winner" class="img-circle medal-size">
-              }
-              else if (i == 1)
-              {
-                <img src="/images/silvermedal.png" alt="runnerup" class="img-circle medal-size">
-              }
-              else if (i == 2)
-              {
-                <img src="/images/bronzemedal.png" alt="runnerupsecond" class="img-circle medal-size">
-              }
-              else
-              {
-                <img src="/images/lovebatch.png" alt="runnerupsecond" class="img-circle love-token">
-              }
-              <h2 class="text-uppercase text-info">@teamName</h2>
-              <h3 class="text-success">Score: <strong>@teamScore / 10</strong></h3>
-              <h3 class="text-muted">@theme</h3>
-            </div>
+            <img src="/images/goldmedal.png" alt="Winner" class="medal-size" title="@title">
           }
+          else if (i == 1)
+          {
+            <img src="/images/silvermedal.png" alt="runnerup" class="medal-size" title="@title">
+          }
+          else if (i == 2)
+          {
+            <img src="/images/bronzemedal.png" alt="runnerupsecond" class="medal-size" title="@title">
+          }
+          else
+          {
+            <img src="/images/lovebatch.png" alt="runnerupsecond" class="love-token" title="@title">
+          }
+          <h3 class="text-uppercase text-info">@teamName</h3>
+          <h4 class="text-success">Score: <strong>@teamScore / 10</strong></h4>
         </div>
-      </div>
+      }
     </div>
   </div>
+  <div class="tab-pane fade pt-2 border border-warning" id="v-best-impl-result" role="tabpanel" aria-labelledby="v-best-impl-result-tab">
+    <div class="row">
+      @for (int i = 0; i < bestImplementationTeams.Count; i++)
+      {
+        var teamName = bestImplementationTeams[i].TeamName;
+        var teamScore = $"{bestImplementationTeams[i].AverageBestImplementationScore:0.000}";
+        var theme = bestImplementationTeams[i].Theme.ToString();
+        var participants = bestImplementationTeams[i].Participants;
+        var title = $"{theme} - {participants}";
+
+        
+        <div class="col-md-4 text-center mb-4">
+          @if (i == 0)
+          {
+            <img src="/images/goldmedal.png" alt="Winner" class="medal-size" title="@title">
+          }
+          else if (i == 1)
+          {
+            <img src="/images/silvermedal.png" alt="runnerup" class="medal-size" title="@title">
+          }
+          else if (i == 2)
+          {
+            <img src="/images/bronzemedal.png" alt="runnerupsecond" class="medal-size" title="@title">
+          }
+          else
+          {
+            <img src="/images/lovebatch.png" alt="runnerupsecond" class="love-token" title="@title">
+          }
+          <h3 class="text-uppercase text-info">@teamName</h3>
+          <h4 class="text-success">Score: <strong>@teamScore / 10</strong></h4>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="tab-pane fade p-2" id="v-peoples-choice" role="tabpanel" aria-labelledby="v-peoples-choice-tab">
+    <partial name="_PeoplesChoice" model="peoplesChoiceTeams"/>
+  </div>
 </div>
-@*<div class="display-4 text-center">Feature implementation in progress...</div>*@

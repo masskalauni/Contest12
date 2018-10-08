@@ -1,0 +1,69 @@
+﻿@model (IList<(string Code, string Detail, int FinalScore)> Teams, IList<Kolpi.Models.Score.ParticipantVoteViewModel> AllVoteViewModels)
+@{
+  ViewData["Title"] = "Peoples Choice Votes";
+  Layout = null;
+}
+
+<div class="alert alert-primary alert-dismissible fade show" role="alert">
+  <strong>Hover on team name to see participants and their theme. Also, hovering over ranks (1st, 2nd etc.) shows points associated with it.</strong>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
+<div class="table-responsive">
+  <table class="table table-bordered table-hover table-sm">
+    <thead class="thead-dark">
+      <tr class="text-center">
+        <th scope="col">Voter</th>
+        @foreach (var team in Model.Teams)
+        {
+          var teamData = team.Detail.Split("(");
+          <th scope="col" title="@teamData[1].Replace(")", "")">@teamData[0]</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="font-weight-bold text-primary">
+        <td title="Aggregated Final Score">AFS</td>
+        @foreach (var (_, TeamDetail, FinalCore) in Model.Teams)
+        {
+          <td scope="row" class="text-center" title="@TeamDetail">@FinalCore</td>
+        }
+      </tr>
+      @foreach (var item in Model.AllVoteViewModels)
+      {
+        <tr>
+          <td scope="row">
+            <label>@item.UserName.Split("@")[0]</label>
+          </td>
+          @foreach (var team in Model.Teams)
+          {
+            <td class="text-center">
+              @if (team.Code.Equals(item.OrderOneTeam))
+              {
+                <span class="font-weight-bold" title="@Kolpi.Web.Constants.Score.RankOne points">1st</span>
+              }
+              else if (team.Code.Equals(item.OrderTwoTeam))
+              {
+                <span class="font-weight-bold" title="@Kolpi.Web.Constants.Score.RankTwo points">2nd</span>
+              }
+              else if (team.Code.Equals(item.OrderThreeTeam))
+              {
+                <span class="font-weight-bold" title="@Kolpi.Web.Constants.Score.RankThree points">3rd</span>
+              }
+              else if (team.Code.Equals(item.OrderFourTeam))
+              {
+                <span class="font-weight-bold" title="@Kolpi.Web.Constants.Score.RankFour points">4th</span>
+              }
+              else if (team.Code.Equals(item.OrderFiveTeam))
+              {
+                <span class="font-weight-bold" title="@Kolpi.Web.Constants.Score.RankFive points">5th</span>
+              }
+            </td>
+          }
+        </tr>
+      }      
+    </tbody>
+  </table>
+</div>

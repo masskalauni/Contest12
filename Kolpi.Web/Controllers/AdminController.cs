@@ -7,6 +7,7 @@ using Kolpi.Models.Score;
 using Kolpi.Web.Constants;
 using Kolpi.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,38 +24,79 @@ namespace Kolpi.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            //if (DateTime.Now < DateTime.Parse("2017-11-30 11:00 AM"))
-            //{
-            //    return RedirectToAction("Error", new { errorCode = "Feature Access Time", message = "This feature is will be available 2017-11-30 4:00 PM. Respect your curiosity, THANKS!" });
-            //}
-
-            var judgeScores = await _context.JudgeScores.Include(t => t.Team).Include(u => u.KolpiUser).ToListAsync();
-            var judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)).ToList();
+            List<JudgeScore> judgeScores = await _context.JudgeScores.Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
+            List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)).ToList();
+            List<ParticipantVote> allVotes = await _context.ParticipantVotes.ToListAsync();
+            List<IdentityUser> allUsers = await _context.Users.ToListAsync();
 
 
             //The weighted average (x) is equal to the sum of the product of the weight (wi) times the data number (xi) divided by the sum of the weights
-            var teamsFinalScores = judgeScoresViewModels.GroupBy(x => x.Team)
-                .Select((g, h) => new TeamViewModel
+            List<TeamViewModel> teamsFinalScores = judgeScoresViewModels.GroupBy(x => new { x.Team, x.Theme, x.Participants })
+                .Select(g => new TeamViewModel
                 {
-                    TeamName = g.Key,
+                    TeamName = g.Key.Team,
                     AverageBestIdeaScore = g.Sum(x => x.BestIdeaScore.Value) / g.Count(),
                     AverageBestImplementationScore = g.Sum(x => x.BestTechnicalImplementationScore.Value) / g.Count(),
-                    //Theme = g.
+                    Theme = g.Key.Theme,
+                    Participants = g.Key.Participants
                 }).ToList();
 
-            var bestIdeaTeams = teamsFinalScores.OrderByDescending(x => x.AverageBestIdeaScore).ToList();
-            var bestImplementationTeams = teamsFinalScores.OrderByDescending(x => x.AverageBestImplementationScore).ToList();
-            var peoplesChoiceTeams = teamsFinalScores.OrderByDescending(x => x.AveragePeoplesChoiceScore).ToList();
+
+            var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
+            {
+                UserName = allUsers.FirstOrDefault(y => y.Id == x.UserId)?.UserName
+            }).ToList();
+
+            IList<(string Code, string Detail)> allTeams = await GetTeamsFormatted();
+            IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded = new List<(string, string, int)>();
+            int finalScoreSum;
+            foreach (var (Code, Detail) in allTeams)
+            {
+                finalScoreSum = 0;
+                foreach (var vote in allVoteViewModels)
+                {
+                    if (Code.Equals(vote.OrderOneTeam))
+                    {
+                        finalScoreSum += Score.RankOne;
+                    }
+                    else if (Code.Equals(vote.OrderTwoTeam))
+                    {
+                        finalScoreSum += Score.RankTwo;
+                    }
+                    else if (Code.Equals(vote.OrderThreeTeam))
+                    {
+                        finalScoreSum += Score.RankThree;
+                    }
+                    else if (Code.Equals(vote.OrderFourTeam))
+                    {
+                        finalScoreSum += Score.RankFour;
+                    }
+                    else if (Code.Equals(vote.OrderFiveTeam))
+                    {
+                        finalScoreSum += Score.RankFive;
+                    }
+                }
+                allTeamsScoreAdded.Add((Code, Detail, finalScoreSum));
+            }
+
+            var peopleChoices = (allTeamsScoreAdded, allVoteViewModels);
 
             var finalResult = new FinalResultViewModel
             {
-                BestIdeaTeams = bestIdeaTeams,
-                BestImplementationTeams = bestImplementationTeams,
-                PeoplesChoiceTeams = peoplesChoiceTeams,
-                JudgesScores = new List<JudgeScoreViewModel>()
+                TeamsScores = teamsFinalScores,
+                JudgesScores = judgeScoresViewModels,
+                PeoplesChoiceRanks = peopleChoices
             };
 
             return View(finalResult);
+        }
+
+        private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
+        {
+            var teams = await _context.Teams.Include(x => x.Participants).ToListAsync();
+            IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
+                $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
+            return teamList;
         }
 
         public IActionResult Error(string errorCode, string message)

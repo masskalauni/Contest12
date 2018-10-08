@@ -35,6 +35,17 @@ namespace Kolpi.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Custom Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequiredUniqueChars = 1;
+            });
+
             services.AddDbContext<KolpiDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("MsSqlConnection")));
 

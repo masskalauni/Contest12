@@ -1,0 +1,14 @@
+﻿.medal-size {
+  width: 140px;
+  height: 195px
+}
+
+.love-token {
+  width: 110px;
+  height: 110px
+}
+
+.team-border {
+  border: 2px solid #101010;
+  margin: 5px
+}
