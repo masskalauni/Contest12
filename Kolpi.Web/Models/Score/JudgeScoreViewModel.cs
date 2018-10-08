@@ -75,7 +75,6 @@ namespace Kolpi.Models.Score
             PresentationScore = judgeScore.PresentationScore;
             Team = judgeScore.Team.TeamName;
             Theme = judgeScore.Team.Theme;
-            Participants = string.Join(",", judgeScore.Team.Participants.ToList().Select(s => s.Name));
 
             var userName = judgeScore.KolpiUser?.UserName;
             userName = userName?.Substring(0, userName.IndexOf('@'));

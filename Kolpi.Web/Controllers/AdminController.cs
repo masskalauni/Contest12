@@ -25,7 +25,10 @@ namespace Kolpi.Web.Controllers
         public async Task<IActionResult> Index()
         {
             List<JudgeScore> judgeScores = await _context.JudgeScores.Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
-            List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)).ToList();
+            List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
+            {
+                Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
+            }).ToList();
             List<ParticipantVote> allVotes = await _context.ParticipantVotes.ToListAsync();
             List<IdentityUser> allUsers = await _context.Users.ToListAsync();
 
