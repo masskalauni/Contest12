@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Kolpi.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
+using Kolpi.Web.Models;
 
 namespace Kolpi.Web.Controllers
 {
@@ -14,17 +16,22 @@ namespace Kolpi.Web.Controllers
     public class ScoresController : Controller
     {
         private readonly KolpiDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public ScoresController(KolpiDbContext context)
+        public ScoresController(KolpiDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
-        
+
         public async Task<IActionResult> Index()
         {
             var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var teamScores = _context.JudgeScores.Include(t => t.Team).Where(x => x.KolpiUserId == me);
             var scoreList = await teamScores.ToListAsync();
+
+            ViewData["AllowScoreEdit"] = _configuration.GetSection("AppSettings:AllowScoreEdit").Get<bool>();
+
             return View(scoreList.Select(x => new JudgeScoreViewModel(x)));
         }
 
@@ -70,7 +77,6 @@ namespace Kolpi.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
-            //return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "You can't edit scores since 2017-11-30 11:30 AM, all judges already concluded rankings." });
 
             if (id == null)
             {
@@ -85,6 +91,7 @@ namespace Kolpi.Web.Controllers
             }
 
             var teamScoreViewModel = new JudgeScoreViewModel(teamScore);
+
             return View(teamScoreViewModel);
         }
 
@@ -92,6 +99,9 @@ namespace Kolpi.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, JudgeScoreViewModel teamScoreViewModel)
         {
+            if (!_configuration.GetSection("AppSettings:AllowScoreEdit").Get<bool>())
+                return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "All judges already concluded their scores, you can't edit." });
+
             if (id != teamScoreViewModel.Id)
             {
                 return NotFound();
@@ -159,7 +169,7 @@ namespace Kolpi.Web.Controllers
         {
             ViewData["Title"] = "About";
             return View();
-        }        
+        }
 
         private bool TeamExists(int id)
         {

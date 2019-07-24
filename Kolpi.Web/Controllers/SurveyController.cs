@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using Kolpi.Web.Constants;
+using Microsoft.Extensions.Configuration;
 
 namespace Kolpi.Web.Controllers
 {
@@ -19,10 +20,12 @@ namespace Kolpi.Web.Controllers
     public class SurveyController : Controller
     {
         private readonly KolpiDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public SurveyController(KolpiDbContext context)
+        public SurveyController(KolpiDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -85,6 +88,13 @@ namespace Kolpi.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> VoteTeams(ParticipantVoteViewModel voteViewModel)
         {
+            if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
+            {
+                ModelState.AddModelError("", $"Polling timespan already expired, you can't vote now.");
+                voteViewModel.Teams = await GetTeamsSelectList();
+                return View(voteViewModel);
+            }
+
             if (ModelState.IsValid)
             {
                 // Validation - dropdown uniqueness

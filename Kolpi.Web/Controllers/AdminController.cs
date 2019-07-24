@@ -48,7 +48,7 @@ namespace Kolpi.Web.Controllers
             var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
             {
                 UserName = allUsers.FirstOrDefault(y => y.Id == x.UserId)?.UserName
-            }).ToList();
+            }).OrderBy(x => x.UserName).ToList();
 
             IList<(string Code, string Detail)> allTeams = await GetTeamsFormatted();
             IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded = new List<(string, string, int)>();
