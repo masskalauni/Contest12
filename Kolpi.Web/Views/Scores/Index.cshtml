@@ -2,6 +2,9 @@
 @{
     ViewData["Title"] = "Team Score";
     int sn = 0;
+    bool allowEdit = (bool)ViewData["AllowScoreEdit"];
+    string allowEditClass = allowEdit ? "text-warning" : "disabled text-dark";
+    string allowEditTitle = allowEdit ? "" : "Score edit diabled";
 
 }
 <div class="row">
@@ -44,8 +47,8 @@
       @foreach (var item in Model)
       {
         <tr>
-          <td scope="row">
-            <a asp-action="Edit" asp-route-id="@item.Id" class="text-warning"><ion-icon name="create"></ion-icon></a>
+          <td scope="row" title="@allowEditTitle">
+            <a asp-action="Edit" asp-route-id="@item.Id" class="@allowEditClass"><ion-icon name="create"></ion-icon></a>
           </td>
           <td scope="row">
             @(++sn)

@@ -12,3 +12,13 @@
   border: 2px solid #101010;
   margin: 5px
 }
+
+#v-pills-tab li :hover {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+a.disabled {
+  color: gray;
+  pointer-events: none;
+}

@@ -2,6 +2,7 @@
 @{
   ViewData["Title"] = "Peoples Choice Votes";
   Layout = null;
+  int sn = 0;
 }
 
 <div class="alert alert-primary alert-dismissible fade show" role="alert">
@@ -13,8 +14,9 @@
 
 <div class="table-responsive">
   <table class="table table-bordered table-hover table-sm">
-    <thead class="thead-dark">
+    <thead class="thead-light">
       <tr class="text-center">
+        <th scope="col">#</th>
         <th scope="col">Voter</th>
         @foreach (var team in Model.Teams)
         {
@@ -24,18 +26,22 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="font-weight-bold text-primary">
-        <td title="Aggregated Final Score">AFS</td>
+      <tr class="font-weight-bold bg-success" style="color:white">
+        <td></td>
+        <td title="Final Score"><span style="font-size:1.2em">Score <ion-icon class="align-middle" name="arrow-round-forward"></ion-icon></span></td>
         @foreach (var (_, TeamDetail, FinalCore) in Model.Teams)
         {
-          <td scope="row" class="text-center" title="@TeamDetail">@FinalCore</td>
+          <td scope="row" class="text-center" title="@TeamDetail"><span style="font-size:1.2em">@FinalCore</span></td>
         }
       </tr>
       @foreach (var item in Model.AllVoteViewModels)
       {
         <tr>
           <td scope="row">
-            <label>@item.UserName.Split("@")[0]</label>
+            <span class="font-weight-bold text-center">@(++sn)</span>
+          </td>
+          <td>
+            <span>@item.UserName.Split("@")[0]</span>
           </td>
           @foreach (var team in Model.Teams)
           {
