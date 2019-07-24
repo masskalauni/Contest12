@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using Kolpi.Web.Constants;
 using Microsoft.Extensions.Configuration;
+using Kolpi.Web.Models;
 
 namespace Kolpi.Web.Controllers
 {
@@ -31,11 +32,14 @@ namespace Kolpi.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> VoteTeams()
         {
+            if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
+                return View("Error", new ErrorViewModel { ErrorCode = "Voting Disabled", Message = "Bear with us! Once event is closed, you will be allowed to vote for teams of your choice." });
+
             var participantVoteViewModel = new ParticipantVoteViewModel { Teams = await GetTeamsSelectList() };
             return View(participantVoteViewModel);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = Role.Admin)]
         public async Task<IActionResult> PeoplesChoiceVotes()
         {
             var allVotes = await _context.ParticipantVotes.ToListAsync();
@@ -88,12 +92,12 @@ namespace Kolpi.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> VoteTeams(ParticipantVoteViewModel voteViewModel)
         {
-            if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
-            {
-                ModelState.AddModelError("", $"Polling timespan already expired, you can't vote now.");
-                voteViewModel.Teams = await GetTeamsSelectList();
-                return View(voteViewModel);
-            }
+            //if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
+            //{
+            //    ModelState.AddModelError("", $"Polling timespan already expired, you can't vote now.");
+            //    voteViewModel.Teams = await GetTeamsSelectList();
+            //    return View(voteViewModel);
+            //}
 
             if (ModelState.IsValid)
             {
@@ -107,7 +111,7 @@ namespace Kolpi.Web.Controllers
 
                 if (votes.Distinct().Count() != votes.Count)
                 {
-                    ModelState.AddModelError("", $"You can't make same team take multiple ranks, or do you? Team selection on individual dropdown must be unique.");
+                    ModelState.AddModelError("", $"You can't make same team take multiple ranks, or do you? Your top five selections must be unique.");
                     voteViewModel.Teams = await GetTeamsSelectList();
                     return View(voteViewModel);
                 }
