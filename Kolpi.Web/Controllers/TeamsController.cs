@@ -24,6 +24,8 @@ namespace Kolpi.Web.Controllers
         private readonly KolpiDbContext _context;
         public IConfiguration _Config { get; }
 
+        private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
+
         public TeamsController(KolpiDbContext context, IConfiguration _config)
         {
             _context = context;
@@ -34,6 +36,18 @@ namespace Kolpi.Web.Controllers
         {
             var teams = await _context.Teams
                 .Include(team => team.Participants)
+                .Where(x => IsCurrentYear(x.CreatedOn))
+                .OrderBy(x => x.TeamName)
+                .ToListAsync();
+            var currentUserName = User.FindFirst(ClaimTypes.Name)?.Value;
+            var teamViewModels = teams.Select(x => new TeamViewModel(x, currentUserName));
+            return View(teamViewModels);
+        }
+        public async Task<IActionResult> LastYearParticipants()
+        {
+            var teams = await _context.Teams
+                .Include(team => team.Participants)
+                .Where(x => x.CreatedOn.Year == DateTime.Now.Year - 1)
                 .OrderBy(x => x.TeamName)
                 .ToListAsync();
             var currentUserName = User.FindFirst(ClaimTypes.Name)?.Value;
@@ -43,7 +57,10 @@ namespace Kolpi.Web.Controllers
 
         public async Task<IActionResult> Analytics()
         {
-            var teams = await _context.Teams.Include(team => team.Participants).ToListAsync();
+            var teams = await _context.Teams
+                .Include(team => team.Participants)
+                .Where(x => IsCurrentYear(x.CreatedOn))
+                .ToListAsync();
             var analytics = new TeamAnalyticsViewModel
             {
                 TotalTeams = teams.Count,
@@ -91,8 +108,8 @@ namespace Kolpi.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TeamName,Avatar,Theme,ProblemStatement,ITRequirements,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
         {
-            if (teamViewModel.Location.Equals("Kathmandu", StringComparison.InvariantCultureIgnoreCase))
-                return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired for Nepal center." });
+            //if (teamViewModel.Location.Equals("Kathmandu", StringComparison.InvariantCultureIgnoreCase))
+            //    return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired for Nepal center." });
 
             if (ModelState.IsValid)
             {
