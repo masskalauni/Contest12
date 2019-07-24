@@ -1,31 +1,40 @@
 ﻿@{ ViewData["Title"] = "Home"; }
+
 @if (!User.Identity.IsAuthenticated)
 {
-  <div class="jumbotron jumbotron-fluid p-0">
-    <div class="container text-center">
-      <img class="card-img-top" src="~/images/V-Hackathon 2.0 - Logo.png" alt="Vhachathon Logo">
+    <div class="pl-5 pt-3 pr-5">
+        <div class="jumbotron jumbotron-fluid p-4">
+            <div class="text-center">
+                <img class="img-fluid" src="~/images/hackfest.png" alt="Hackfest 2019 Logo">
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="card-deck">
-    <div class="card">
-      <img class="card-img-top" src="~/images/vhackathon_teaser.jpg" alt="Vhachathon Teaser">
-      <div class="card-body">
-        <h2 class="card-text text-center text-info">You are cordially invited to disrupt and revolutionize!</h2>
-      </div>
+
+    <div class="text-center">
+        <img class="img-fluid" src="~/images/hackfest1.png" alt="Hackfest 2019 Logo">
     </div>
-    <div class="card">
-      <img class="card-img-top" src="~/images/vhackathon_psnew.jpg" alt="Vhackathon Problem Statement">
-    </div>
-  </div>
+
+
+    @*<div class="card-deck">
+          <div class="card">
+            <img class="card-img-top" src="~/images/vhackathon_teaser.jpg" alt="Vhachathon Teaser">
+            <div class="card-body">
+              <h2 class="card-text text-center text-info">You are cordially invited to disrupt and revolutionize!</h2>
+            </div>
+          </div>
+          <div class="card">
+            <img class="card-img-top" src="~/images/vhackathon_psnew.jpg" alt="Vhackathon Problem Statement">
+          </div>
+        </div>*@
 }
 else
 {
-  @*<div class="text-center text-info m-4">
-      <div class="text-center">
-        <a asp-area="" asp-controller="Teams" asp-action="Create" class="btn btn-outline-success btn-lg"><ion-icon name="add" class="align-middle" size="large"></ion-icon><span class="align-middle"> Register Your Team</span></a>
-        <a asp-area="" asp-controller="Teams" asp-action="Index" class="btn btn-outline-success btn-lg mx-5"><ion-icon name="grid" class="align-middle" size="large"></ion-icon><span class="align-middle"> Registered Teams</span></a>
-        <a asp-area="" asp-controller="Teams" asp-action="Analytics" class="btn btn-outline-success btn-lg"><ion-icon name="analytics" class="align-middle" size="large"></ion-icon><span class="align-middle"> Teams Synopsis</span></a>
-      </div>
-    </div>*@
-  <div class="display-1 text-center my-5 text-uppercase">Welcome</div>
+    @*<div class="text-center text-info m-4">
+          <div class="text-center">
+            <a asp-area="" asp-controller="Teams" asp-action="Create" class="btn btn-outline-success btn-lg"><ion-icon name="add" class="align-middle" size="large"></ion-icon><span class="align-middle"> Register Your Team</span></a>
+            <a asp-area="" asp-controller="Teams" asp-action="Index" class="btn btn-outline-success btn-lg mx-5"><ion-icon name="grid" class="align-middle" size="large"></ion-icon><span class="align-middle"> Registered Teams</span></a>
+            <a asp-area="" asp-controller="Teams" asp-action="Analytics" class="btn btn-outline-success btn-lg"><ion-icon name="analytics" class="align-middle" size="large"></ion-icon><span class="align-middle"> Teams Synopsis</span></a>
+          </div>
+        </div>*@
+    <div class="display-1 text-center my-5 text-uppercase">Welcome</div>
 }
