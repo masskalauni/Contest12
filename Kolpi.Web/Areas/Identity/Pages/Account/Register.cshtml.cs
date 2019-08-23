@@ -70,16 +70,16 @@ namespace Kolpi.Web.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            //Whitelist voters
-            List<string> voters = _configuration.GetSection("AppSettings:Voters").Get<List<string>>();
-            List<string> admins = _configuration.GetSection("AppSettings:Admins").Get<List<string>>();
+            ////Whitelist voters
+            //List<string> voters = _configuration.GetSection("AppSettings:Voters").Get<List<string>>();
+            //List<string> admins = _configuration.GetSection("AppSettings:Admins").Get<List<string>>();
 
-            voters.AddRange(admins);
-
-            if(!voters.Any(x => x.Equals(Input.Email, StringComparison.InvariantCultureIgnoreCase)))
-            {
-                ModelState.AddModelError(string.Empty, "You are not allowed to register to this portal.");
-            }
+            //voters.AddRange(admins);
+            f
+            //if(!voters.Any(x => x.Equals(Input.Email, StringComparison.InvariantCultureIgnoreCase)))
+            //{
+            //    ModelState.AddModelError(string.Empty, "You are not allowed to register to this portal.");
+            //}
 
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)

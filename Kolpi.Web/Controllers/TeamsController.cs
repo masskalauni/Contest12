@@ -120,7 +120,16 @@ namespace Kolpi.Web.Controllers
                 }
                 //Raw participants in text are good to deserialize
                 var participantsDtos = TeamViewModel.DeserializeParticipants(teamViewModel.Participants);
-                var partcipantsOnDb = _context.Participants.ToList();
+
+                List<Participant> partcipantsOnDb = _context.Participants
+                    .Where(x => IsCurrentYear(x.Team.CreatedOn)).ToList();
+
+                //partcipantsOnDb = _context.Teams
+                //    .Include(x => x.Participants)
+                //    .Where(x => IsCurrentYear(x.CreatedOn))
+                //    .SelectMany(x => x.Participants).ToList();
+
+                
 
                 var alreadyTakenParticipants = partcipantsOnDb.Intersect(participantsDtos, ComplexTypeComparer<Participant>.Create(x => x.Inumber));
                 if (alreadyTakenParticipants.Any())
