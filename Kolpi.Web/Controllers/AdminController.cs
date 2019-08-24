@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Kolpi.Web.Controllers
 {
@@ -18,16 +19,21 @@ namespace Kolpi.Web.Controllers
     public class AdminController : Controller
     {
         private readonly KolpiDbContext _context;
+        private readonly IConfiguration _configuration;
         private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
 
 
-        public AdminController(KolpiDbContext context)
+        public AdminController(KolpiDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
         {
+            if (!_configuration.GetSection("AppSettings:AllowFinalResult").Get<bool>())
+                return View("Error", new ErrorViewModel { ErrorCode = "Final Result Disabled", Message = "Final result not disclosed yet to avoid bias and judgement conflicts." });
+
             List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => IsCurrentYear(x.Team.CreatedOn)).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
             List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
             {
