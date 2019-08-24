@@ -9,6 +9,7 @@ using Kolpi.Data;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Kolpi.Web.Models;
+using System;
 
 namespace Kolpi.Web.Controllers
 {
@@ -17,6 +18,8 @@ namespace Kolpi.Web.Controllers
     {
         private readonly KolpiDbContext _context;
         private readonly IConfiguration _configuration;
+        private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
+
 
         public ScoresController(KolpiDbContext context, IConfiguration configuration)
         {
@@ -27,7 +30,7 @@ namespace Kolpi.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var teamScores = _context.JudgeScores.Include(t => t.Team).Where(x => x.KolpiUserId == me);
+            var teamScores = _context.JudgeScores.Where(x => IsCurrentYear(x.Team.CreatedOn)).Include(t => t.Team).Where(x => x.KolpiUserId == me);
             var scoreList = await teamScores.ToListAsync();
 
             ViewData["AllowScoreEdit"] = _configuration.GetSection("AppSettings:AllowScoreEdit").Get<bool>();
@@ -37,7 +40,7 @@ namespace Kolpi.Web.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var teams = await _context.Teams.ToListAsync();
+            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).ToListAsync();
             var teamSelectlist = teams.Select(x => new SelectListItem { Value = x.TeamCode, Text = $"{x.TeamName} ( {x.Theme.ToString()} )" }).ToList();
 
             var model = new JudgeScoreViewModel { Teams = teamSelectlist };
@@ -124,7 +127,7 @@ namespace Kolpi.Web.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TeamExists(teamScoreViewModel.Id))
+                    if (!ScoreExists(teamScoreViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -171,7 +174,7 @@ namespace Kolpi.Web.Controllers
             return View();
         }
 
-        private bool TeamExists(int id)
+        private bool ScoreExists(int id)
         {
             return _context.JudgeScores.Any(e => e.Id == id);
         }

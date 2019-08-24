@@ -75,7 +75,6 @@ namespace Kolpi.Web.Areas.Identity.Pages.Account
             //List<string> admins = _configuration.GetSection("AppSettings:Admins").Get<List<string>>();
 
             //voters.AddRange(admins);
-            f
             //if(!voters.Any(x => x.Equals(Input.Email, StringComparison.InvariantCultureIgnoreCase)))
             //{
             //    ModelState.AddModelError(string.Empty, "You are not allowed to register to this portal.");

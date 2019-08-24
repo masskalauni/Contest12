@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Kolpi.Data;
@@ -17,6 +18,9 @@ namespace Kolpi.Web.Controllers
     public class AdminController : Controller
     {
         private readonly KolpiDbContext _context;
+        private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
+
+
         public AdminController(KolpiDbContext context)
         {
             _context = context;
@@ -24,7 +28,7 @@ namespace Kolpi.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<JudgeScore> judgeScores = await _context.JudgeScores.Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
+            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => IsCurrentYear(x.Team.CreatedOn)).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
             List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
             {
                 Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
@@ -96,7 +100,7 @@ namespace Kolpi.Web.Controllers
 
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
-            var teams = await _context.Teams.Include(x => x.Participants).ToListAsync();
+            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;

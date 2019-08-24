@@ -229,10 +229,12 @@ namespace Kolpi.Web.Controllers
 
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
-            var teams = await _context.Teams.Include(x => x.Participants).ToListAsync();
+            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;
         }
+
+        private bool IsCurrentYear(DateTime createdOn) => createdOn.Year == DateTime.Now.Year;
     }
 }
