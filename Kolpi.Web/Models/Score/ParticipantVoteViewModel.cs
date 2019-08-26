@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -40,5 +41,7 @@ namespace Kolpi.Models.Score
 
         [Required(ErrorMessage = "Who is the fifth team in your opninion?")]
         public string OrderFiveTeam { get; set; }
+        public DateTime? VotedOn { get; set; }
+
     }
 }

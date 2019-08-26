@@ -4,14 +4,16 @@ using Kolpi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kolpi.Web.Migrations
 {
     [DbContext(typeof(KolpiDbContext))]
-    partial class KolpiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190826101047_Voted_On_Added_OnParticipantVotes")]
+    partial class Voted_On_Added_OnParticipantVotes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,4 +1,6 @@
-﻿namespace Kolpi.Models.Score
+﻿using System;
+
+namespace Kolpi.Models.Score
 {
     public class ParticipantVote
     {
@@ -15,6 +17,7 @@
             OrderThreeTeam = participantVoteViewModel.OrderThreeTeam;
             OrderFourTeam = participantVoteViewModel.OrderFourTeam;
             OrderFiveTeam = participantVoteViewModel.OrderFiveTeam;
+            VotedOn = participantVoteViewModel.VotedOn;
         }
 
         public int Id { get; set; }
@@ -24,5 +27,6 @@
         public string OrderThreeTeam { get; set; }
         public string OrderFourTeam { get; set; }
         public string OrderFiveTeam { get; set; }
+        public DateTime? VotedOn { get; set; }
     }
 }

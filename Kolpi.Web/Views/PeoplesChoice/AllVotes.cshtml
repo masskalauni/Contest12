@@ -1,7 +1,9 @@
 ﻿@model (IList<(string Code, string Detail, int FinalScore)> Teams, IList<Kolpi.Models.Score.ParticipantVoteViewModel> AllVoteViewModels)
+
 @{
-  ViewData["Title"] = "Peoples Choice Votes";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    short sn = 0;
+    ViewData["Title"] = "Peoples Choice Votes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="alert alert-primary alert-dismissible fade show" role="alert">
@@ -11,11 +13,13 @@
   </button>
 </div>
 
+
 <div class="table-responsive">
   <table class="table table-bordered table-hover table-sm">
-    <thead class="thead-dark">
+    <thead class="thead-light">
       <tr class="text-center">
-        <th scope="col">Voter</th>
+        <th scope="col">Voter #</th>
+        <th scope="col">Voter Name</th>
         @foreach (var team in Model.Teams)
         {
           var teamData = team.Detail.Split("(");
@@ -23,16 +27,19 @@
         }
       </tr>
     </thead>
-    <tbody>
+    <tbody>      
       @foreach (var item in Model.AllVoteViewModels)
       {
-        <tr>
+        <tr class="text-center">
           <td scope="row">
-            <label>@item.UserName.Split("@")[0]</label>
+            <span class="font-weight-bold text-center">@(++sn)</span>
+          </td>
+          <td>
+            <span>@item.UserName</span>
           </td>
           @foreach (var team in Model.Teams)
           {
-            <td class="text-center">
+            <td>
               @if (team.Code.Equals(item.OrderOneTeam))
               {
                 <span class="font-weight-bold" title="@Kolpi.Web.Constants.Score.RankOne points">1st</span>
@@ -57,14 +64,15 @@
           }
         </tr>
       }
-      <tr class="font-weight-bold text-primary">
-        <td>AFS</td>
+      <tr class="font-weight-bold bg-success" style="color:white">
+        <td></td>
+        <td title="Final Score"><span style="font-size:1.2em;float:right;">Total Team Score <ion-icon class="align-middle" name="arrow-round-forward"></ion-icon></span></td>
+
         @foreach (var (_, TeamDetail, FinalCore) in Model.Teams)
         {
-          <td scope="row" class="text-center" title="@TeamDetail">@FinalCore</td>
+          <td scope="row" class="text-center" title="@TeamDetail"><span style="font-size:1.2em">@FinalCore</span></td>
         }
       </tr>
     </tbody>
   </table>
-  <p><b>FAS: </b>Aggregated Final Score</p>
 </div>

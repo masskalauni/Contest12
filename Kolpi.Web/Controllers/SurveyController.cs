@@ -17,126 +17,16 @@ using Kolpi.Web.Models;
 
 namespace Kolpi.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = Role.Admin)]
     public class SurveyController : Controller
     {
         private readonly KolpiDbContext _context;
-        private readonly IConfiguration _configuration;
 
         public SurveyController(KolpiDbContext context, IConfiguration configuration)
         {
             _context = context;
-            _configuration = configuration;
         }
-
-        [HttpGet]
-        public async Task<IActionResult> VoteTeams()
-        {
-            if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
-                return View("Error", new ErrorViewModel { ErrorCode = "Voting Disabled", Message = "Bear with us! Once event is closed, you will be allowed to vote for teams of your choice." });
-
-            var participantVoteViewModel = new ParticipantVoteViewModel { Teams = await GetTeamsSelectList() };
-            return View(participantVoteViewModel);
-        }
-
-        [HttpGet, Authorize(Roles = Role.Admin)]
-        public async Task<IActionResult> PeoplesChoiceVotes()
-        {
-            var allVotes = await _context.ParticipantVotes.ToListAsync();
-            var allUsers = await _context.Users.ToListAsync();
-
-            var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
-            {
-                UserName = allUsers.FirstOrDefault(y => y.Id == x.UserId)?.UserName
-            }).ToList();
-
-            IList<(string Code, string Detail)> allTeams = await GetTeamsFormatted();
-            IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded = new List<(string, string, int)>();
-
-            int finalScoreSum;
-
-            foreach (var (Code, Detail) in allTeams)
-            {
-                finalScoreSum = 0;
-                foreach (var vote in allVoteViewModels)
-                {
-                    if (Code.Equals(vote.OrderOneTeam))
-                    {
-                        finalScoreSum += Score.RankOne;
-                    }
-                    else if (Code.Equals(vote.OrderTwoTeam))
-                    {
-                        finalScoreSum += Score.RankTwo;
-                    }
-                    else if (Code.Equals(vote.OrderThreeTeam))
-                    {
-                        finalScoreSum += Score.RankThree;
-                    }
-                    else if (Code.Equals(vote.OrderFourTeam))
-                    {
-                        finalScoreSum += Score.RankFour;
-                    }
-                    else if (Code.Equals(vote.OrderFiveTeam))
-                    {
-                        finalScoreSum += Score.RankFive;
-                    }
-                }
-                allTeamsScoreAdded.Add((Code, Detail, finalScoreSum));
-            }
-
-            (IList<(string Value, string Text, int FinalScore)> Teams, IList<ParticipantVoteViewModel> AllVoteViewModels) returnData = (allTeamsScoreAdded, allVoteViewModels);
-
-            return View(returnData);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> VoteTeams(ParticipantVoteViewModel voteViewModel)
-        {
-            //if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
-            //{
-            //    ModelState.AddModelError("", $"Polling timespan already expired, you can't vote now.");
-            //    voteViewModel.Teams = await GetTeamsSelectList();
-            //    return View(voteViewModel);
-            //}
-
-            if (ModelState.IsValid)
-            {
-                // Validation - dropdown uniqueness
-                var votes = new List<string> {
-                    voteViewModel.OrderOneTeam,
-                    voteViewModel.OrderTwoTeam,
-                    voteViewModel.OrderThreeTeam,
-                    voteViewModel.OrderFourTeam,
-                    voteViewModel.OrderFiveTeam };
-
-                if (votes.Distinct().Count() != votes.Count)
-                {
-                    ModelState.AddModelError("", $"You can't make same team take multiple ranks, or do you? Your top five selections must be unique.");
-                    voteViewModel.Teams = await GetTeamsSelectList();
-                    return View(voteViewModel);
-                }
-
-                var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-                //Validation - Has user already voted?
-                var record = await _context.ParticipantVotes.Where(x => x.UserId.Equals(me)).ToListAsync();
-
-                if (record.Any())
-                    return RedirectToAction(nameof(HomeController.Error), "Home", new { errorCode = "Already Voted", message = $"Don't be so greedy :), You have aleady voted for people's choice award. Thanks!" });
-
-                var participantVote = new ParticipantVote(voteViewModel)
-                {
-                    UserId = me
-                };
-
-                _context.Add(participantVote);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(HomeController.Index), "Home");
-            }
-
-            //Something went wrong, keep user on same page
-            return View(voteViewModel);
-        }
+        
 
         [HttpGet]
         public async Task<IActionResult> AdminIndex()
@@ -219,22 +109,6 @@ namespace Kolpi.Web.Controllers
         public IActionResult Thanks()
         {
             return View();
-        }
-
-        private async Task<IList<SelectListItem>> GetTeamsSelectList()
-        {
-            IList<(string Value, string Text)> teamList = await GetTeamsFormatted();
-            return teamList.Select(x => new SelectListItem { Text = x.Text, Value = x.Value }).ToList();
-        }
-
-        private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
-        {
-            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).Include(x => x.Participants).ToListAsync();
-            IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
-                $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
-            return teamList;
-        }
-
-        private bool IsCurrentYear(DateTime createdOn) => createdOn.Year == DateTime.Now.Year;
+        }        
     }
 }
