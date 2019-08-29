@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Kolpi.Enums;
+using Kolpi.Web.Constants;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Kolpi.Models.Score
@@ -21,31 +22,31 @@ namespace Kolpi.Models.Score
 
         [DisplayName("Innovation")]
         [Required(ErrorMessage = "Score for 'Innovation' criteria is required.")]
-        [Range(1.0, 10.0, ErrorMessage = "Score should be in range 1.0-10.0")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? InnovationScore { get; set; }
 
-        [DisplayName("Usefulness (UI-UX / API)")]
+        [DisplayName("Usefulness")]
         [Required(ErrorMessage = "Score for 'Usefulness' criteria is required.")]
-        [Range(1.0, 10.0, ErrorMessage = "Score should be in range 1.0-10.0")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? UsefulnessScore { get; set; }
 
-        [DisplayName("Quality (Implementation)")]
+        [DisplayName("Quality & Completeness")]
         [Required(ErrorMessage = "Score for 'Quality' criteria is required.")]
-        [Range(1.0, 10.0, ErrorMessage = "Score should be in range 1.0-10.0")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? QualityScore { get; set; }
 
         [DisplayName("Value To Company")]
         [Required(ErrorMessage = "Score for 'Value To Company' criteria is required.")]
-        [Range(1.0, 10.0, ErrorMessage = "Score should be in range 1.0-10.0")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? CompanyValueScore { get; set; }
 
-        [DisplayName("Presentation")]
+        [DisplayName("Presentation & Demonstration")]
         [Required(ErrorMessage = "Score for 'Presentation' criteria is required.")]
-        [Range(1.0, 10.0, ErrorMessage = "Score should be in range 1.0-10.0")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? PresentationScore { get; set; }
 
