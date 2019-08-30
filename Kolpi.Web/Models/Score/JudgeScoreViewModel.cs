@@ -63,6 +63,11 @@ namespace Kolpi.Models.Score
             + CompanyValueScore * .1f 
             + PresentationScore * .1f;
 
+        [DisplayName("Average Score (Non-Weighted)")]
+        [DisplayFormat(DataFormatString = "{0:0.000}")]
+        public float? AverageScore => (QualityScore + UsefulnessScore + QualityScore 
+            + CompanyValueScore + PresentationScore) / 5.0F;
+
         public string Judge { get; set; }
 
         public JudgeScoreViewModel() { }
