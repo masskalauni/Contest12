@@ -9,10 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Kolpi.Web.Services;
-using System.Threading.Tasks;
 using System;
-using Kolpi.Web.Constants;
-using System.Collections.Generic;
 
 namespace Kolpi.Web
 {
@@ -70,6 +67,7 @@ namespace Kolpi.Web
                 {
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
+                    options.Conventions.AuthorizeAreaFolder("Identity", "/AccountAdmin");
                 });
 
             services.ConfigureApplicationCookie(options =>
@@ -106,44 +104,42 @@ namespace Kolpi.Web
             {
                 routes.MapRoute("default", "{controller=Home}/{action=Index}/{identifier?}");
             });
-
-            CreateRoles(services).Wait();
         }
 
-        private async Task CreateRoles(IServiceProvider serviceProvider)
-        {
-            //initializing custom roles and admin user
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-            string[] roleNames = { Role.Admin, Role.Committee, Role.Participant };
+        //private async Task CreateRoles(IServiceProvider serviceProvider)
+        //{
+        //    //initializing custom roles and admin user
+        //    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        //    var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+        //    string[] roleNames = { Role.Admin, Role.Committee, Role.Participant };
 
-            if (!(await roleManager.Roles.AnyAsync()))
-            {
-                foreach (var roleName in roleNames)
-                {
-                    var roleExist = await roleManager.RoleExistsAsync(roleName);
-                    if (!roleExist)
-                    {
-                        await roleManager.CreateAsync(new IdentityRole(roleName));
-                    }
-                }
-            }
+        //    if (!(await roleManager.Roles.AnyAsync()))
+        //    {
+        //        foreach (var roleName in roleNames)
+        //        {
+        //            var roleExist = await roleManager.RoleExistsAsync(roleName);
+        //            if (!roleExist)
+        //            {
+        //                await roleManager.CreateAsync(new IdentityRole(roleName));
+        //            }
+        //        }
+        //    }
 
-            List<string> admins = Configuration.GetSection("AppSettings:Admins").Get<List<string>>();
-            foreach (var admin in admins)
-            {
-                var user = await userManager.FindByNameAsync(admin);
+        //    List<string> admins = Configuration.GetSection("AppSettings:Admins").Get<List<string>>();
+        //    foreach (var admin in admins)
+        //    {
+        //        var user = await userManager.FindByNameAsync(admin);
 
-                //user has not registered yet, go for other one
-                if (user == null)
-                    continue;
+        //        //user has not registered yet, go for other one
+        //        if (user == null)
+        //            continue;
 
-                //Already in admin role, go ahead
-                if (await userManager.IsInRoleAsync(user, Role.Admin))
-                    continue;
+        //        //Already in admin role, go ahead
+        //        if (await userManager.IsInRoleAsync(user, Role.Admin))
+        //            continue;
 
-                await userManager.AddToRoleAsync(user, Role.Admin);
-            }
-        }
+        //        await userManager.AddToRoleAsync(user, Role.Admin);
+        //    }
+        //}
     }
 }
