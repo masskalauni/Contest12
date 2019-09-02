@@ -39,20 +39,20 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> People's Choice Award</a>
-                        <div class="dropdown-menu">                           
-                            <a class="dropdown-item" asp-area="" asp-controller="PeoplesChoice" asp-action="VoteTeams"><ion-icon name="checkbox-outline" class="align-middle"></ion-icon><span class="align-middle"> Vote Your Top 5</span></a>                            
-                            <a class="dropdown-item" asp-area="" asp-controller="PeoplesChoice" asp-action="AllVotes"><ion-icon name="medal" class="align-middle"></ion-icon><span class="align-middle"> Final Result</span></a>                            
-                        </div>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> Survey</a>
-                        <div class="dropdown-menu">                           
-                            <a class="dropdown-item" asp-area="" asp-controller="Survey" asp-action="AdminIndex"><ion-icon name="reorder" class="align-middle"></ion-icon><span class="align-middle"> All Surveys</span></a>                            
-                            <a class="dropdown-item" asp-area="" asp-controller="Survey" asp-action="CreateSurveyThread"><ion-icon name="add" class="align-middle"></ion-icon><span class="align-middle"> Create New Survey</span></a>                            
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-area="" asp-controller="PeoplesChoice" asp-action="VoteTeams"><ion-icon name="checkbox-outline" class="align-middle"></ion-icon><span class="align-middle"> Vote Your Top 5</span></a>
+                            <a class="dropdown-item" asp-area="" asp-controller="PeoplesChoice" asp-action="AllVotes"><ion-icon name="medal" class="align-middle"></ion-icon><span class="align-middle"> Final Result</span></a>
                         </div>
                     </li>
                     @if (User.IsInRole(Kolpi.Web.Constants.Role.Admin))
                     {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> Survey</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Survey" asp-action="AdminIndex"><ion-icon name="reorder" class="align-middle"></ion-icon><span class="align-middle"> All Surveys</span></a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Survey" asp-action="CreateSurveyThread"><ion-icon name="add" class="align-middle"></ion-icon><span class="align-middle"> Create New Survey</span></a>
+                            </div>
+                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Team Scores</a>
                             <div class="dropdown-menu">
