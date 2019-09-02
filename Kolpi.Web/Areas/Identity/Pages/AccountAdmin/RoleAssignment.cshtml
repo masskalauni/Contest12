@@ -1,0 +1,16 @@
+﻿@page
+@model Kolpi.Web.Areas.Identity.Pages.AccountAdmin.RoleAssignmentModel
+@{
+    ViewData["Title"] = "Role Assignment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Role Assignment</h2>
+
+
+<ul>
+    @foreach (var user in Model.Users)
+    {
+        <li><a href=".\assignrole?userId=@user.Key">@user.Value</a></li>
+    }
+</ul>
