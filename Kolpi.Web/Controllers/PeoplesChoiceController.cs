@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Kolpi.Data;
 using Kolpi.Models.Score;
+using Kolpi.Web.Common;
 using Kolpi.Web.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,7 +37,7 @@ namespace Kolpi.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> AllVotes()
         {
-            var allVotes = await _context.ParticipantVotes.Where(x => IsCurrentYear(x.VotedOn)).ToListAsync();            
+            var allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.IsCurrentYear()).ToListAsync();            
             var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
             {
                 UserName = "Hidden"
@@ -84,7 +85,10 @@ namespace Kolpi.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> VoteTeams(ParticipantVoteViewModel voteViewModel)
         {
-            if (!_configuration.GetSection("AppSettings:AllowVoting").Get<bool>())
+            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.Voting);
+            var allowVoting = editSetting?.Value == "1";
+
+            if (!allowVoting)
             {
                 ModelState.AddModelError("", $"Voting Disabled: Bear with us! Once judeges submit their scores, we will open this up to vote for teams of your choice.");
                 voteViewModel.Teams = await GetTeamsSelectList();
@@ -110,7 +114,7 @@ namespace Kolpi.Web.Controllers
 
                 var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 //Validation - Has user already voted?
-                var record = await _context.ParticipantVotes.Where(x => x.UserId.Equals(me) && IsCurrentYear(x.VotedOn)).ToListAsync();
+                var record = await _context.ParticipantVotes.Where(x => x.UserId.Equals(me) && x.VotedOn.IsCurrentYear()).ToListAsync();
 
                 if (record.Any())
                     return RedirectToAction(nameof(HomeController.Error), "Home", new { errorCode = "Already Voted", message = $"Don't be so greedy :), You have aleady voted for people's choice award. Thanks!" });
@@ -145,12 +149,10 @@ namespace Kolpi.Web.Controllers
 
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
-            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).Include(x => x.Participants).ToListAsync();
+            var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;
         }
-
-        private bool IsCurrentYear(DateTime? dateTime) =>  dateTime.HasValue && dateTime.Value.Year == DateTime.Now.Year;
     }
 }

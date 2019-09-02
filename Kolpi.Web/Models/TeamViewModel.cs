@@ -73,7 +73,8 @@ namespace Kolpi.Models.Score
         [Display(Name = "Git Repository")]
         public string RepoUrl { get; set; }
 
-        //Score: Each team got in each award category
+        //Score each team got in each award category
+        public float? AveragePlainAverage { get; internal set; }
         public float AverageBestIdeaScore { get; set; }
         public float AverageBestImplementationScore { get; set; }
         public float AveragePeoplesChoiceScore { get; set; }

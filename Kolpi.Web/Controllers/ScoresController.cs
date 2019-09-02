@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Kolpi.Web.Models;
 using System;
+using Kolpi.Web.Constants;
+using Kolpi.Web.Common;
 
 namespace Kolpi.Web.Controllers
 {
@@ -18,8 +20,6 @@ namespace Kolpi.Web.Controllers
     {
         private readonly KolpiDbContext _context;
         private readonly IConfiguration _configuration;
-        private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
-
 
         public ScoresController(KolpiDbContext context, IConfiguration configuration)
         {
@@ -30,17 +30,18 @@ namespace Kolpi.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var teamScores = _context.JudgeScores.Where(x => IsCurrentYear(x.Team.CreatedOn)).Include(t => t.Team).Where(x => x.KolpiUserId == me);
+            var teamScores = _context.JudgeScores.Where(x => x.Team.CreatedOn.IsCurrentYear()).Include(t => t.Team).Where(x => x.KolpiUserId == me);
             var scoreList = await teamScores.ToListAsync();
 
-            ViewData["AllowScoreEdit"] = _configuration.GetSection("AppSettings:AllowScoreEdit").Get<bool>();
+            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name==Setting.ScoreEdit);
+            ViewData["AllowScoreEdit"] = editSetting?.Value == "1";
 
             return View(scoreList.Select(x => new JudgeScoreViewModel(x)));
         }
 
         public async Task<IActionResult> Create()
         {
-            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).ToListAsync();
+            var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).ToListAsync();
             var teamSelectlist = teams.Select(x => new SelectListItem { Value = x.TeamCode, Text = $"{x.TeamName} ( {x.Theme.ToString()} )" }).ToList();
 
             var model = new JudgeScoreViewModel { Teams = teamSelectlist };
@@ -102,7 +103,10 @@ namespace Kolpi.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, JudgeScoreViewModel teamScoreViewModel)
         {
-            if (!_configuration.GetSection("AppSettings:AllowScoreEdit").Get<bool>())
+            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.ScoreEdit);
+            var allowEditing = editSetting?.Value == "1";
+
+            if (!allowEditing)
                 return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "All judges already concluded their scores, you can't edit." });
 
             if (id != teamScoreViewModel.Id)

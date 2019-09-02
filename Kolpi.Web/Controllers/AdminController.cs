@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Kolpi.Web.Common;
+
 
 namespace Kolpi.Web.Controllers
 {
@@ -20,8 +22,6 @@ namespace Kolpi.Web.Controllers
     {
         private readonly KolpiDbContext _context;
         private readonly IConfiguration _configuration;
-        private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
-
 
         public AdminController(KolpiDbContext context, IConfiguration configuration)
         {
@@ -31,15 +31,18 @@ namespace Kolpi.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            if (!_configuration.GetSection("AppSettings:AllowFinalResult").Get<bool>())
+            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.FinalResult);
+            var allowFinalResult = editSetting?.Value == "1";
+
+            if (!allowFinalResult)
                 return View("Error", new ErrorViewModel { ErrorCode = "Final Result Disabled", Message = "Final result not disclosed yet to avoid bias and judgement conflicts." });
 
-            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => IsCurrentYear(x.Team.CreatedOn)).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
+            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => x.Team.CreatedOn.IsCurrentYear()).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
             List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
             {
                 Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
             }).ToList();
-            List<ParticipantVote> allVotes = await _context.ParticipantVotes.ToListAsync();
+            List<ParticipantVote> allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.IsCurrentYear()).ToListAsync();
             List<IdentityUser> allUsers = await _context.Users.ToListAsync();
 
 
@@ -48,8 +51,9 @@ namespace Kolpi.Web.Controllers
                 .Select(g => new TeamViewModel
                 {
                     TeamName = g.Key.Team,
-                    AverageBestIdeaScore = g.Sum(x => x.BestIdeaScore.Value) / g.Count(),
-                    AverageBestImplementationScore = g.Sum(x => x.BestTechnicalImplementationScore.Value) / g.Count(),
+                    AveragePlainAverage = g.Average(x => x.AverageScore.Value),
+                    AverageBestIdeaScore = g.Average(x => x.BestIdeaScore.Value),
+                    AverageBestImplementationScore = g.Average(x => x.BestTechnicalImplementationScore.Value),
                     Theme = g.Key.Theme,
                     Participants = g.Key.Participants
                 }).ToList();
@@ -106,7 +110,7 @@ namespace Kolpi.Web.Controllers
 
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
-            var teams = await _context.Teams.Where(x => IsCurrentYear(x.CreatedOn)).Include(x => x.Participants).ToListAsync();
+            var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;

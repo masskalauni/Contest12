@@ -15,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Kolpi.Enums;
 using Kolpi.Web.Models;
+using Kolpi.Web.Common;
 
 namespace Kolpi.Web.Controllers
 {
@@ -23,8 +24,6 @@ namespace Kolpi.Web.Controllers
     {
         private readonly KolpiDbContext _context;
         public IConfiguration _Config { get; }
-
-        private bool IsCurrentYear(DateTime createdYear) => createdYear.Year == DateTime.Now.Year;
 
         public TeamsController(KolpiDbContext context, IConfiguration _config)
         {
@@ -36,7 +35,7 @@ namespace Kolpi.Web.Controllers
         {
             var teams = await _context.Teams
                 .Include(team => team.Participants)
-                .Where(x => IsCurrentYear(x.CreatedOn))
+                .Where(x => x.CreatedOn.IsCurrentYear())
                 .OrderBy(x => x.TeamName)
                 .ToListAsync();
             var currentUserName = User.FindFirst(ClaimTypes.Name)?.Value;
@@ -59,7 +58,7 @@ namespace Kolpi.Web.Controllers
         {
             var teams = await _context.Teams
                 .Include(team => team.Participants)
-                .Where(x => IsCurrentYear(x.CreatedOn))
+                .Where(x => x.CreatedOn.IsCurrentYear())
                 .ToListAsync();
             var analytics = new TeamAnalyticsViewModel
             {
@@ -122,7 +121,7 @@ namespace Kolpi.Web.Controllers
                 var participantsDtos = TeamViewModel.DeserializeParticipants(teamViewModel.Participants);
 
                 List<Participant> partcipantsOnDb = _context.Participants
-                    .Where(x => IsCurrentYear(x.Team.CreatedOn)).ToList();
+                    .Where(x => x.Team.CreatedOn.IsCurrentYear()).ToList();
 
                 //partcipantsOnDb = _context.Teams
                 //    .Include(x => x.Participants)
