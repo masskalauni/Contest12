@@ -19,6 +19,7 @@ namespace Kolpi.Data
         public DbSet<Participant> Participants { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<SurveyThread> SurveyThreads { get; set; }
+        public DbSet<Settings> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Kolpi.Web.Migrations
 {
     [DbContext(typeof(KolpiDbContext))]
-    [Migration("20190826101047_Voted_On_Added_OnParticipantVotes")]
-    partial class Voted_On_Added_OnParticipantVotes
+    [Migration("20190830101842_SettingsTable")]
+    partial class SettingsTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -100,6 +100,29 @@ namespace Kolpi.Web.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ParticipantVotes");
+                });
+
+            modelBuilder.Entity("Kolpi.Models.Score.Settings", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CreatedBy");
+
+                    b.Property<DateTime>("DateCreated");
+
+                    b.Property<DateTime>("LastUpdated");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("UpdatedBy");
+
+                    b.Property<string>("Value");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("Kolpi.Models.Score.Team", b =>
