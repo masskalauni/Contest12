@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Kolpi.Web.Services;
 using System;
+using Kolpi.Web.Constants;
 
 namespace Kolpi.Web
 {
@@ -61,13 +62,18 @@ namespace Kolpi.Web
                     microsoftOptions.ClientSecret = "nloNKVKF40]:$gocaUB589{";
                 });
 
+            //Add policies
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policy.RequireSuperAdminRole, policy => policy.RequireRole(Role.SuperAdmin));
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
                 .AddRazorPagesOptions(options =>
                 {
                     options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                    options.Conventions.AuthorizeAreaFolder("Identity", "/AccountAdmin");
+                    options.Conventions.AuthorizeAreaFolder("Identity", "/AccountAdmin", Policy.RequireSuperAdminRole);
                 });
 
             services.ConfigureApplicationCookie(options =>

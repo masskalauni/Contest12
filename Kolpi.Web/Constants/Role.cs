@@ -5,10 +5,8 @@
         public const string Participant = "Participant";
         public const string Committee = "Committee";
         public const string Admin = "Admin";
-        public const string AdminOrCommittee = "Admin,Committee";
-        public const string CommitteeOrParticipant = "Committee,Participant";
-        public const string AdminOrCommitteeOrParticipant = "Admin,Committee,Participant";
-        public const string AdminOrParticipant = "Admin,Participant";
-
+        public const string SuperAdmin = "SuperAdmin";
+        public const string Voter = "Voter";
+        public const string Judge = "Judge";
     }
 }
