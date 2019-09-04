@@ -62,6 +62,11 @@ namespace Kolpi.Web
                     microsoftOptions.ClientSecret = "nloNKVKF40]:$gocaUB589{";
                 });
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.AccessDeniedPath = "/identity/account/accessdenied";
+            });
+
             //Add policies
             services.AddAuthorization(options =>
             {
