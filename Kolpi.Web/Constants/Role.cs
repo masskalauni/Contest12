@@ -8,5 +8,7 @@
         public const string SuperAdmin = "SuperAdmin";
         public const string Voter = "Voter";
         public const string Judge = "Judge";
+
+        public const string AdminOrParticipant = "Admin,Participant";
     }
 }
