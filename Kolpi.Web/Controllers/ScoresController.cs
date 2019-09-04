@@ -31,12 +31,16 @@ namespace Kolpi.Web.Controllers
         {
             var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var teamScores = _context.JudgeScores.Where(x => x.Team.CreatedOn.IsCurrentYear()).Include(t => t.Team).Where(x => x.KolpiUserId == me);
-            var scoreList = await teamScores.ToListAsync();
-
-            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name==Setting.ScoreEdit);
-            ViewData["AllowScoreEdit"] = editSetting?.Value == "1";
+            var scoreList = await teamScores.ToListAsync();            
+            ViewData["AllowScoreEdit"] = await IsScoreEditEnabled();
 
             return View(scoreList.Select(x => new JudgeScoreViewModel(x)));
+        }
+
+        private async Task<bool> IsScoreEditEnabled()
+        {
+            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.ScoreEdit);
+            return editSetting?.Value == "1";
         }
 
         public async Task<IActionResult> Create()
@@ -103,8 +107,7 @@ namespace Kolpi.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, JudgeScoreViewModel teamScoreViewModel)
         {
-            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.ScoreEdit);
-            var allowEditing = editSetting?.Value == "1";
+            var allowEditing = await IsScoreEditEnabled();
 
             if (!allowEditing)
                 return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "All judges already concluded their scores, you can't edit." });
