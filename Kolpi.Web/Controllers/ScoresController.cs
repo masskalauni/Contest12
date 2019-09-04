@@ -37,12 +37,6 @@ namespace Kolpi.Web.Controllers
             return View(scoreList.Select(x => new JudgeScoreViewModel(x)));
         }
 
-        private async Task<bool> IsScoreEditEnabled()
-        {
-            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.ScoreEdit);
-            return editSetting?.Value == "1";
-        }
-
         public async Task<IActionResult> Create()
         {
             var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).ToListAsync();
@@ -184,6 +178,12 @@ namespace Kolpi.Web.Controllers
         private bool ScoreExists(int id)
         {
             return _context.JudgeScores.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> IsScoreEditEnabled()
+        {
+            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.ScoreEdit);
+            return editSetting?.Value == "1";
         }
     }
 }
