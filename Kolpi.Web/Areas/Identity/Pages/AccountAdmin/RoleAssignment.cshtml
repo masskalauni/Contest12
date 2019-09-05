@@ -8,9 +8,9 @@
 <h2>Role Assignment</h2>
 
 
-<ul>
+<ol>
     @foreach (var user in Model.Users)
     {
         <li><a href=".\assignrole?userId=@user.Key">@user.Value</a></li>
     }
-</ul>
+</ol>
