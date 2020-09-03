@@ -49,18 +49,18 @@ namespace Kolpi.Web
             .AddEntityFrameworkStores<KolpiDbContext>()
             .AddDefaultTokenProviders();
 
-            services.AddAuthentication()
-                .AddGoogle(googleOptions =>
-                {
-                    googleOptions.ClientId = "1098909678334-j9hktlgauqctf712m8fv08vddm560jot.apps.googleusercontent.com";
-                    googleOptions.ClientSecret = "8vrbe318_KysX4yEA-MhD21f";
+            //services.AddAuthentication()
+            //    .AddGoogle(googleOptions =>
+            //    {
+            //        googleOptions.ClientId = "1098909678334-j9hktlgauqctf712m8fv08vddm560jot.apps.googleusercontent.com";
+            //        googleOptions.ClientSecret = "8vrbe318_KysX4yEA-MhD21f";
 
-                })
-                .AddMicrosoftAccount(microsoftOptions =>
-                {
-                    microsoftOptions.ClientId = "780207cf-a4e6-42f5-bb3a-e402e73748c5";
-                    microsoftOptions.ClientSecret = "nloNKVKF40]:$gocaUB589{";
-                });
+            //    })
+            //    .AddMicrosoftAccount(microsoftOptions =>
+            //    {
+            //        microsoftOptions.ClientId = "780207cf-a4e6-42f5-bb3a-e402e73748c5";
+            //        microsoftOptions.ClientSecret = "nloNKVKF40]:$gocaUB589{";
+            //    });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -73,10 +73,10 @@ namespace Kolpi.Web
                 options.AddPolicy(Policy.RequireSuperAdminRole, policy => policy.RequireRole(Role.SuperAdmin));
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+            services.AddMvc()
                 .AddRazorPagesOptions(options =>
                 {
-                    options.AllowAreas = true;
+                    //options.AllowAreas = true;
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                     options.Conventions.AuthorizeAreaFolder("Identity", "/AccountAdmin", Policy.RequireSuperAdminRole);
                 });
