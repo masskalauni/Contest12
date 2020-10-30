@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Kolpi.Web.Services;
 using System;
 using Kolpi.Web.Constants;
+using Microsoft.Extensions.Hosting;
 
 namespace Kolpi.Web
 {
@@ -73,13 +74,8 @@ namespace Kolpi.Web
                 options.AddPolicy(Policy.RequireSuperAdminRole, policy => policy.RequireRole(Role.SuperAdmin));
             });
 
-            services.AddMvc()
-                .AddRazorPagesOptions(options =>
-                {
-                    //options.AllowAreas = true;
-                    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
-                    options.Conventions.AuthorizeAreaFolder("Identity", "/AccountAdmin", Policy.RequireSuperAdminRole);
-                });
+            services.AddControllersWithViews();
+            services.AddRazorPages();
 
             services.ConfigureApplicationCookie(options =>
                 {
@@ -92,7 +88,7 @@ namespace Kolpi.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider services)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider services)
         {
             if (env.IsDevelopment())
             {
@@ -106,15 +102,20 @@ namespace Kolpi.Web
             }
 
             app.UseHttpsRedirection();
+            //UseStaticFiles before UseRouting
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseAuthentication();
+            app.UseRouting();
 
-            app.UseMvc(routes =>
+            //UseAuthentication and UseAuthorization: after, UseRouting and UseCors, but before UseEndpoints
+            app.UseAuthentication();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute("default", "{controller=Home}/{action=Index}/{identifier?}");
-            });
+                endpoints.MapRazorPages();
+                endpoints.MapDefaultControllerRoute();
+            });            
         }
 
         //private async Task CreateRoles(IServiceProvider serviceProvider)
