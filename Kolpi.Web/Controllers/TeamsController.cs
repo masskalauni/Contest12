@@ -35,7 +35,7 @@ namespace Kolpi.Web.Controllers
         {
             var teams = await _context.Teams
                 .Include(team => team.Participants)
-                .Where(x => x.CreatedOn.IsCurrentYear())
+                .Where(x => x.CreatedOn.Year == DateTime.Now.Year)
                 .OrderBy(x => x.TeamName)
                 .ToListAsync();
             var currentUserName = User.FindFirst(ClaimTypes.Name)?.Value;
