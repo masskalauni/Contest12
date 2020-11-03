@@ -58,7 +58,7 @@ namespace Kolpi.Web.Controllers
         {
             var teams = await _context.Teams
                 .Include(team => team.Participants)
-                .Where(x => x.CreatedOn.IsCurrentYear())
+                .Where(x => x.CreatedOn.Year == DateTime.Now.Year)
                 .ToListAsync();
             var analytics = new TeamAnalyticsViewModel
             {
@@ -121,7 +121,7 @@ namespace Kolpi.Web.Controllers
                 var participantsDtos = TeamViewModel.DeserializeParticipants(teamViewModel.Participants);
 
                 List<Participant> partcipantsOnDb = _context.Participants
-                    .Where(x => x.Team.CreatedOn.IsCurrentYear()).ToList();
+                    .Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).ToList();
 
                 //partcipantsOnDb = _context.Teams
                 //    .Include(x => x.Participants)

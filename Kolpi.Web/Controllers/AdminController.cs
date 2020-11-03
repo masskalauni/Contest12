@@ -37,12 +37,12 @@ namespace Kolpi.Web.Controllers
             if (!allowFinalResult)
                 return View("Error", new ErrorViewModel { ErrorCode = "Final Result Disabled", Message = "Final result not disclosed yet to avoid bias and judgement conflicts." });
 
-            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => x.Team.CreatedOn.IsCurrentYear()).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
+            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
             List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
             {
                 Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
             }).ToList();
-            List<ParticipantVote> allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.IsCurrentYear()).ToListAsync();
+            List<ParticipantVote> allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.Value.Year == DateTime.Now.Year).ToListAsync();
             List<IdentityUser> allUsers = await _context.Users.ToListAsync();
 
 
@@ -110,7 +110,7 @@ namespace Kolpi.Web.Controllers
 
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
-            var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).Include(x => x.Participants).ToListAsync();
+            var teams = await _context.Teams.Where(x => x.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;

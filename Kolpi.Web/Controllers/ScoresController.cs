@@ -30,7 +30,7 @@ namespace Kolpi.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            var teamScores = _context.JudgeScores.Where(x => x.Team.CreatedOn.IsCurrentYear()).Include(t => t.Team).Where(x => x.KolpiUserId == me);
+            var teamScores = _context.JudgeScores.Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).Include(t => t.Team).Where(x => x.KolpiUserId == me);
             var scoreList = await teamScores.ToListAsync();            
             ViewData["AllowScoreEdit"] = await IsScoreEditEnabled();
 
@@ -39,7 +39,7 @@ namespace Kolpi.Web.Controllers
 
         public async Task<IActionResult> Create()
         {
-            var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).ToListAsync();
+            var teams = await _context.Teams.Where(x => x.CreatedOn.Year == DateTime.Now.Year).ToListAsync();
             var teamSelectlist = teams.Select(x => new SelectListItem { Value = x.TeamCode, Text = $"{x.TeamName} ( {x.Theme.ToString()} )" }).ToList();
 
             var model = new JudgeScoreViewModel { Teams = teamSelectlist };

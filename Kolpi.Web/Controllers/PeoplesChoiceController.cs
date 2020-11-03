@@ -37,7 +37,7 @@ namespace Kolpi.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> AllVotes()
         {
-            var allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.IsCurrentYear()).ToListAsync();            
+            var allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.Value.Year == DateTime.Now.Year).ToListAsync();            
             var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
             {
                 UserName = "Hidden"
@@ -114,7 +114,7 @@ namespace Kolpi.Web.Controllers
 
                 var me = User.FindFirst(ClaimTypes.NameIdentifier).Value;
                 //Validation - Has user already voted?
-                var record = await _context.ParticipantVotes.Where(x => x.UserId.Equals(me) && x.VotedOn.IsCurrentYear()).ToListAsync();
+                var record = await _context.ParticipantVotes.Where(x => x.UserId.Equals(me) && x.VotedOn.Value.Year == DateTime.Now.Year).ToListAsync();
 
                 if (record.Any())
                     return RedirectToAction(nameof(HomeController.Error), "Home", new { errorCode = "Already Voted", message = $"Don't be so greedy :), You have aleady voted for people's choice award. Thanks!" });
@@ -149,7 +149,7 @@ namespace Kolpi.Web.Controllers
 
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
-            var teams = await _context.Teams.Where(x => x.CreatedOn.IsCurrentYear()).Include(x => x.Participants).ToListAsync();
+            var teams = await _context.Teams.Where(x => x.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;
