@@ -258,9 +258,9 @@ namespace Kolpi.Web.Controllers
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string identifier)
+        public async Task<IActionResult> DeleteConfirmed(string teamCode)
         {
-            var team = await _context.Teams.FirstOrDefaultAsync(x => x.TeamCode.Equals(identifier));
+            var team = await _context.Teams.FirstOrDefaultAsync(x => x.TeamCode.Equals(teamCode));
             await _context.Entry(team).Collection(t => t.Participants).LoadAsync();
 
             _context.Teams.Remove(team);
