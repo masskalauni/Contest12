@@ -176,9 +176,9 @@ namespace Kolpi.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string identifier, [Bind("Id,TeamCode,TeamName,Avatar,Theme,ProblemStatement,ITRequirements,RepoUrl,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
+        public async Task<IActionResult> Edit(string teamCode, [Bind("Id,TeamCode,TeamName,Avatar,Theme,ProblemStatement,ITRequirements,RepoUrl,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
         {
-            if (identifier != teamViewModel.TeamCode)
+            if (teamCode != teamViewModel.TeamCode)
             {
                 return NotFound();
             }
