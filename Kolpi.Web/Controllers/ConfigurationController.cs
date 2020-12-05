@@ -8,9 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Kolpi.Data;
 using Kolpi.Models.Score;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Kolpi.Web.Constants;
 
 namespace Kolpi.Web.Controllers
 {
+    [Authorize(Roles = Role.SuperAdmin)]
     public class ConfigurationController : Controller
     {
         private readonly KolpiDbContext _context;

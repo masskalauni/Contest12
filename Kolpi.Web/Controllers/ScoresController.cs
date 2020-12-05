@@ -104,7 +104,7 @@ namespace Kolpi.Web.Controllers
             var allowEditing = await IsScoreEditEnabled();
 
             if (!allowEditing)
-                return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "All judges already concluded their scores, you can't edit." });
+                return View("Error", new ErrorViewModel { ErrorCode = "Score Edit Disabled", Message = "Possibly all judges already concluded their scores." });
 
             if (id != teamScoreViewModel.Id)
             {

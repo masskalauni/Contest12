@@ -16,3 +16,7 @@ The generated UI requires MVC. To add MVC to your app:
 
 Apps that use ASP.NET Core Identity should also use HTTPS. To enable HTTPS see https://go.microsoft.com/fwlink/?linkid=848054.
 
+
+1. /identity/accountadmin/roles
+2. /Identity/AccountAdmin/RoleAssignment
+3. /configuration

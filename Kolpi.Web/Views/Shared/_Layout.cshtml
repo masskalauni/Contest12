@@ -64,6 +64,19 @@
                             </div>
                         </li>
                     }
+                    @if (User.IsInRole(Kolpi.Web.Constants.Role.SuperAdmin))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Configuration</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Configuration" asp-action="Index"><ion-icon name="settings" class="align-middle"></ion-icon><span class="align-middle"> Settings</span></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/accountadmin/addrole"><ion-icon name="person" class="align-middle"></ion-icon><span class="align-middle"> Add New Role</span></a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/accountadmin/roles"><ion-icon name="people" class="align-middle"></ion-icon><span class="align-middle"> All Roles</span></a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/accountadmin/roleassignment"><ion-icon name="man" class="align-middle"></ion-icon><span class="align-middle"> Role Assignment</span></a>
+                            </div>
+                        </li>
+                    }
                 }
             </ul>
             @*<ion-icon name="time" size="large" class="align-middle"></ion-icon><span class="text-danger text-light font-weight-bold align-middle" id="countdown"></span>*@
