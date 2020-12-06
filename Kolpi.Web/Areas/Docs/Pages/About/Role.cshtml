@@ -1,0 +1,36 @@
+﻿@page
+@model Kolpi.Web.Areas.Docs.Pages.About.RoleModel
+@{
+    short sn = 1;
+}
+
+<table class="table">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Role</th>
+            <th scope="col">Description</th>
+            <th scope="col">Features</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model.RoleList)
+        {
+            <tr>
+                <th scope="row">@(sn++)</th>
+                <td class="font-weight-bold">@role.RoleTitle</td>
+                <td>@role.Description</td>
+                <td>
+                    <ul class="list-group list-group-flush">
+                        @foreach (var feature in role.AllowedFeatures)
+                        {
+                            <li class="list-group-item">@feature</li>
+                        }
+                    </ul>
+
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>

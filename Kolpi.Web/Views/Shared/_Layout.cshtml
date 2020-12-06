@@ -78,6 +78,13 @@
                         </li>
                     }
                 }
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> About</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" asp-area="Docs" asp-page="/about/role"><ion-icon name="book" class="align-middle"></ion-icon><span class="align-middle"> Roles and Features</span></a>
+                    </div>
+                </li>
+
             </ul>
             @*<ion-icon name="time" size="large" class="align-middle"></ion-icon><span class="text-danger text-light font-weight-bold align-middle" id="countdown"></span>*@
             <partial name="_LoginPartial" />
