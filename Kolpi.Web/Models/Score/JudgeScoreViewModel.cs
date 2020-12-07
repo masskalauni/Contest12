@@ -20,33 +20,33 @@ namespace Kolpi.Models.Score
 
         public string Participants { get; set; }
 
-        [DisplayName("Innovation")]
-        [Required(ErrorMessage = "Score for 'Innovation' criteria is required.")]
-        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
+        [DisplayName("Idea and Team (Innovation, Multidiscplinary)")]
+        [Required(ErrorMessage = "Score for 'Idea and Team' criteria is required")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in range 1-10")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? InnovationScore { get; set; }
 
-        [DisplayName("Usefulness")]
-        [Required(ErrorMessage = "Score for 'Usefulness' criteria is required.")]
-        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
+        [DisplayName("Usefulness (Intuitiveness, Scalability)")]
+        [Required(ErrorMessage = "Score for 'Usefulness' criteria is required")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in range 1-10")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? UsefulnessScore { get; set; }
 
-        [DisplayName("Quality & Completeness")]
-        [Required(ErrorMessage = "Score for 'Quality' criteria is required.")]
-        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
+        [DisplayName("Implementation (Functionality, Use of Technology)")]
+        [Required(ErrorMessage = "Score for 'Quality' criteria is required")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in range 1-10")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? QualityScore { get; set; }
 
-        [DisplayName("Value To Company")]
-        [Required(ErrorMessage = "Score for 'Value To Company' criteria is required.")]
-        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
+        [DisplayName("Experience (Value and Impact to Company)")]
+        [Required(ErrorMessage = "Score for 'Experience' criteria is required")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in range 1-10")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? CompanyValueScore { get; set; }
 
         [DisplayName("Presentation & Demonstration")]
-        [Required(ErrorMessage = "Score for 'Presentation' criteria is required.")]
-        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in pre-defined range")]
+        [Required(ErrorMessage = "Score for 'Presentation' criteria is required")]
+        [Range(ScoreRange.Min, ScoreRange.Max, ErrorMessage = "Score must be in range 1-10")]
         [DisplayFormat(DataFormatString = "{0:0.00}")]
         public float? PresentationScore { get; set; }
 
@@ -63,10 +63,13 @@ namespace Kolpi.Models.Score
             + CompanyValueScore * .1f 
             + PresentationScore * .1f;
 
-        [DisplayName("Flat Average Score (Non-Weighted)")]
+        [DisplayName("Weighted Average Score")]
         [DisplayFormat(DataFormatString = "{0:0.000}")]
-        public float? AverageScore => (QualityScore + UsefulnessScore + QualityScore 
-            + CompanyValueScore + PresentationScore) / 5.0F;
+        public float? AverageScore => InnovationScore * .25f  
+            + UsefulnessScore * .15f 
+            + QualityScore * .30f 
+            + CompanyValueScore * .15f 
+            + PresentationScore * .15f;
 
         public string Judge { get; set; }
 
