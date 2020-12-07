@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>aspnet-Kolpi.Web-376B26D5-49F9-4D35-A4B5-127AC509C56F</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
