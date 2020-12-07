@@ -1,0 +1,121 @@
+﻿@model Contest.Models.Score.TeamAnalyticsViewModel
+
+@{
+  ViewData["Title"] = "Team Analytics";
+  Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron jumbotron-fluid">
+  <div class="container px-5">
+    <h1 class="display-4 text-success">Total teams<a href="#all_teams" class="float-right text-primary">@Model.TotalTeams</a></h1>
+    <hr class="my-4">
+    <h1 class="display-4 text-success">Total participants<a href="#all_participants" class="float-right text-primary">@Model.TotalParticipants</a> </h1>
+    <hr class="my-4">
+    <h1 class="display-4 text-success">Total themes selected<span class="float-right text-primary">@Model.ThemesSelectedCount</span></h1>
+    <hr class="my-4">
+    <h1 class="display-4 text-success">Teams requirements<a href="#all_requirements" class="float-right text-primary">See Here</a></h1>
+
+    <hr class="my-4">
+    <h1 class="display-4 text-success">Teams by theme</h1>
+    <div id="accordion" class="mt-4">
+      @for (int i = 0; i < Model.TeamsByTheme.Count; i++)
+      {
+        var themeSelection = Model.TeamsByTheme[i];
+        <div class="card">
+          <div class="card-header" id="theme_heading_+@i">
+            <h5 class="mb-0">
+              @themeSelection.Theme
+              @if (themeSelection.TeamList != null)
+              {
+                <button class="btn btn-link" data-toggle="collapse" data-target="#theme_detail_@i" aria-expanded="false" aria-controls="theme_detail_@i">
+                  Show teams who chose @themeSelection.Theme
+                </button>
+              }
+              <span class="float-right text-primary">@themeSelection.TeamCount</span>
+            </h5>
+          </div>
+          @if (themeSelection.TeamList != null)
+          {
+            <div id="theme_detail_@i" class="collapse" aria-labelledby="theme_heading_@i" data-parent="#accordion">
+              <div class="card-body">
+                <ul class="list-group list-group-flush">
+                  @foreach (var team in themeSelection.TeamList)
+                  {
+                    <li class="list-group-item list-group-item-secondary font-weight-bold text-info">@team</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <h1 class="display-4 text-success mt-4">Teams by location</h1>
+    <div id="accordion" class="mt-4">
+      @for (int i = 0; i < Model.TeamsByLocation.Count; i++)
+      {
+        var idSuffix = i + 10000;
+        var teamByLocation = Model.TeamsByLocation[i];
+        var location = teamByLocation.Location ?? "Nowhere";
+        <div class="card">
+          <div class="card-header" id="theme_heading_+@idSuffix">
+            <h5 class="mb-0">
+              @location
+              @if (teamByLocation.TeamList != null)
+              {
+                <button class="btn btn-link" data-toggle="collapse" data-target="#theme_detail_@idSuffix" aria-expanded="false" aria-controls="theme_detail_@idSuffix">
+                  Show teams that are from @location
+                </button>
+              }
+              <span class="float-right text-primary">@teamByLocation.TeamCount</span>
+            </h5>
+          </div>
+          @if (teamByLocation.TeamList != null)
+          {
+            <div id="theme_detail_@idSuffix" class="collapse" aria-labelledby="theme_heading_@idSuffix" data-parent="#accordion">
+              <div class="card-body">
+                <ul class="list-group list-group-flush">
+                  @foreach (var team in teamByLocation.TeamList)
+                  {
+                    <li class="list-group-item list-group-item-secondary font-weight-bold text-info">@team</li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <h1 class="display-4 text-success mt-4">All teams</h1>
+    <ol class="list-group list-group-flush" id="all_teams">
+      @for (int i = 0; i < Model.AllTeams.Count; i++)
+      {
+        <li class="list-group-item list-group-item-secondary font-weight-bold text-info"><span class="font-weight-bold text-success">@(i + 1).</span> @Model.AllTeams[i]</li>
+      }
+    </ol>
+
+    <h1 class="display-4 text-success mt-4">All participants</h1>
+    <ol class="list-group list-group-flush" id="all_participants">
+      @for (int i = 0; i < Model.AllParticipants.Count; i++)
+      {
+        <li class="list-group-item list-group-item-secondary text-info"><span class="font-weight-bold text-success">@(i + 1).</span> @Model.AllParticipants[i]</li>
+      }
+    </ol>
+
+    <h1 class="display-4 text-success mt-4">Team requirements</h1>
+    <div class="list-group" id="all_requirements">
+      @for (int i = 0; i < Model.TeamRequirements.Count; i++)
+      {
+        <div class="list-group-item flex-column align-items-start">
+          <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1 text-success">@(i + 1). @Model.TeamRequirements[i].Team</h5>
+          </div>
+          <p class="mb-1 text-info"><span class="font-weight-bold">IT - </span>@(Model.TeamRequirements[i].IT ?? "None")</p>
+          <p class="mb-1 text-info"><span class="font-weight-bold">Other - </span>@(Model.TeamRequirements[i].Other ?? "None")</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>
