@@ -140,6 +140,14 @@
         </div>
     </div>
     <div class="tab-pane fade p-2" id="v-peoples-choice" role="tabpanel" aria-labelledby="v-peoples-choice-tab">
-        <partial name="_PeoplesChoice" model="peoplesChoiceTeams" />
+        @if ((bool)ViewData["enablePeoplesChoiceAward"])
+        {
+            <partial name="_PeoplesChoice" model="peoplesChoiceTeams" />
+        }
+        else
+        {
+            string feature = "People's Choice Award";
+            <partial name="_FeatureNotAccessable" model="feature" />
+        }
     </div>
 </div>

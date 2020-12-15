@@ -31,8 +31,11 @@ namespace Contest.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var editSetting = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.FinalResult);
-            var allowFinalResult = editSetting?.Value == "1";
+            var editSettingFinalResult = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.FinalResult);
+            var editSettingPeoplesChoice = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.PeoplesChoiceAward);
+            var allowFinalResult = editSettingFinalResult?.Value == "1";
+            var enablePeoplesChoiceAward = editSettingPeoplesChoice?.Value == "1";
+            ViewData["enablePeoplesChoiceAward"] = enablePeoplesChoiceAward;
 
             if (!allowFinalResult)
                 return View("Error", new ErrorViewModel { ErrorCode = "Final Result Disabled", Message = "Final result not disclosed yet to avoid bias and judgement conflicts." });
@@ -42,9 +45,53 @@ namespace Contest.Web.Controllers
             {
                 Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
             }).ToList();
-            List<ParticipantVote> allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.Value.Year == DateTime.Now.Year).ToListAsync();
-            List<IdentityUser> allUsers = await _context.Users.ToListAsync();
 
+            (IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded, List<ParticipantVoteViewModel> allVoteViewModels) peopleChoices = default;
+
+            if (enablePeoplesChoiceAward)
+            {
+                List<ParticipantVote> allVotes = await _context.ParticipantVotes.Where(x => x.VotedOn.Value.Year == DateTime.Now.Year).ToListAsync();
+                List<IdentityUser> allUsers = await _context.Users.ToListAsync();
+
+                var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
+                {
+                    UserName = allUsers.FirstOrDefault(y => y.Id == x.UserId)?.UserName
+                }).OrderBy(x => x.UserName).ToList();
+
+                IList<(string Code, string Detail)> allTeams = await GetTeamsFormatted();
+                IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded = new List<(string, string, int)>();
+                int finalScoreSum;
+                foreach (var (Code, Detail) in allTeams)
+                {
+                    finalScoreSum = 0;
+                    foreach (var vote in allVoteViewModels)
+                    {
+                        if (Code.Equals(vote.OrderOneTeam))
+                        {
+                            finalScoreSum += Score.RankOne;
+                        }
+                        else if (Code.Equals(vote.OrderTwoTeam))
+                        {
+                            finalScoreSum += Score.RankTwo;
+                        }
+                        else if (Code.Equals(vote.OrderThreeTeam))
+                        {
+                            finalScoreSum += Score.RankThree;
+                        }
+                        else if (Code.Equals(vote.OrderFourTeam))
+                        {
+                            finalScoreSum += Score.RankFour;
+                        }
+                        else if (Code.Equals(vote.OrderFiveTeam))
+                        {
+                            finalScoreSum += Score.RankFive;
+                        }
+                    }
+                    allTeamsScoreAdded.Add((Code, Detail, finalScoreSum));
+                }
+
+                peopleChoices = (allTeamsScoreAdded, allVoteViewModels);
+            }
 
             //The weighted average (x) is equal to the sum of the product of the weight (wi) times the data number (xi) divided by the sum of the weights
             List<TeamViewModel> teamsFinalScores = judgeScoresViewModels.GroupBy(x => new { x.Team, x.Theme, x.Participants })
@@ -56,47 +103,7 @@ namespace Contest.Web.Controllers
                     AverageBestImplementationScore = g.Average(x => x.BestTechnicalImplementationScore.Value),
                     Theme = g.Key.Theme,
                     Participants = g.Key.Participants
-                }).ToList();
-
-
-            var allVoteViewModels = allVotes.Select(x => new ParticipantVoteViewModel(x)
-            {
-                UserName = allUsers.FirstOrDefault(y => y.Id == x.UserId)?.UserName
-            }).OrderBy(x => x.UserName).ToList();
-
-            IList<(string Code, string Detail)> allTeams = await GetTeamsFormatted();
-            IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded = new List<(string, string, int)>();
-            int finalScoreSum;
-            foreach (var (Code, Detail) in allTeams)
-            {
-                finalScoreSum = 0;
-                foreach (var vote in allVoteViewModels)
-                {
-                    if (Code.Equals(vote.OrderOneTeam))
-                    {
-                        finalScoreSum += Score.RankOne;
-                    }
-                    else if (Code.Equals(vote.OrderTwoTeam))
-                    {
-                        finalScoreSum += Score.RankTwo;
-                    }
-                    else if (Code.Equals(vote.OrderThreeTeam))
-                    {
-                        finalScoreSum += Score.RankThree;
-                    }
-                    else if (Code.Equals(vote.OrderFourTeam))
-                    {
-                        finalScoreSum += Score.RankFour;
-                    }
-                    else if (Code.Equals(vote.OrderFiveTeam))
-                    {
-                        finalScoreSum += Score.RankFive;
-                    }
-                }
-                allTeamsScoreAdded.Add((Code, Detail, finalScoreSum));
-            }
-
-            var peopleChoices = (allTeamsScoreAdded, allVoteViewModels);
+                }).ToList();            
 
             var finalResult = new FinalResultViewModel
             {
