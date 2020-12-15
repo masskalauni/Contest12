@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Hackafest</title>
+
+    <environment include="Development">
+        <link href="~/css/custom.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link href="https://unpkg.com/ionicons@4.4.2/dist/css/ionicons.min.css" rel="stylesheet">
+    </environment>
+    <environment exclude="Development">
+        <link href="~/css/custom.css" rel="stylesheet" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link href="https://unpkg.com/ionicons@4.4.2/dist/css/ionicons.min.css" rel="stylesheet">
+    </environment>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-warning" style="line-height:normal">
+        <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><ion-icon name="home"></ion-icon></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse" id="navbarToggler">
+            <ul class="navbar-nav mr-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Teams</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Create"><ion-icon name="add" class="align-middle"></ion-icon><span class="align-middle"> Register Your Team</span></a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Index"><ion-icon name="grid" class="align-middle"></ion-icon><span class="align-middle"> All Teams @DateTime.Now.Year</span></a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="LastYearParticipants"><ion-icon name="grid" class="align-middle"></ion-icon><span class="align-middle"> All Teams @(DateTime.Now.Year - 1)</span></a>
+                            <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="Analytics"><ion-icon name="analytics" class="align-middle"></ion-icon><span class="align-middle"> Teams Synopsis</span></a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" asp-area="" asp-controller="Teams" asp-action="About"><ion-icon name="information-circle" class="align-middle"></ion-icon><span class="align-middle"> About Roles</span></a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> People's Choice Award</a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" asp-area="" asp-controller="PeoplesChoice" asp-action="VoteTeams"><ion-icon name="checkbox-outline" class="align-middle"></ion-icon><span class="align-middle"> Vote Your Top 5</span></a>
+                            <a class="dropdown-item" asp-area="" asp-controller="PeoplesChoice" asp-action="AllVotes"><ion-icon name="medal" class="align-middle"></ion-icon><span class="align-middle"> Final Result</span></a>
+                        </div>
+                    </li>
+                    @if (User.IsInRole(Contest.Web.Constants.Role.Admin))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> Survey</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Survey" asp-action="AdminIndex"><ion-icon name="reorder" class="align-middle"></ion-icon><span class="align-middle"> All Surveys</span></a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Survey" asp-action="CreateSurveyThread"><ion-icon name="add" class="align-middle"></ion-icon><span class="align-middle"> Create New Survey</span></a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Team Scores</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Create"><ion-icon name="thumbs-up" class="align-middle"></ion-icon><span class="align-middle"> Evaluate Team</span></a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="Index"><ion-icon name="filing" class="align-middle"></ion-icon><span class="align-middle"> Evaluation History</span></a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="Index"><ion-icon name="medal" class="align-middle"></ion-icon><span class="align-middle"> Final Result</span></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="" asp-controller="Scores" asp-action="About"><ion-icon name="information-circle" class="align-middle"></ion-icon><span class="align-middle"> About Scoring</span></a>
+                            </div>
+                        </li>
+                    }
+                    @if (User.IsInRole(Contest.Web.Constants.Role.SuperAdmin))
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Configuration</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" asp-area="" asp-controller="Configuration" asp-action="Index"><ion-icon name="settings" class="align-middle"></ion-icon><span class="align-middle"> Settings</span></a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/accountadmin/addrole"><ion-icon name="person" class="align-middle"></ion-icon><span class="align-middle"> Add New Role</span></a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/accountadmin/roles"><ion-icon name="people" class="align-middle"></ion-icon><span class="align-middle"> All Roles</span></a>
+                                <a class="dropdown-item" asp-area="Identity" asp-page="/accountadmin/roleassignment"><ion-icon name="man" class="align-middle"></ion-icon><span class="align-middle"> Role Assignment</span></a>
+                            </div>
+                        </li>
+                    }
+                }
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"> About</a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" asp-area="Docs" asp-page="/about/role"><ion-icon name="book" class="align-middle"></ion-icon><span class="align-middle"> Roles and Features</span></a>
+                    </div>
+                </li>
+
+            </ul>
+            @*<ion-icon name="time" size="large" class="align-middle"></ion-icon><span class="text-danger text-light font-weight-bold align-middle" id="countdown"></span>*@
+            <partial name="_LoginPartial" />
+        </div>
+    </nav>
+    <div class="p-2">
+        @RenderBody()
+    </div>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="https://unpkg.com/ionicons@4.4.2/dist/ionicons.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/ionicons@4.4.2/dist/ionicons.js"></script>
+    </environment>
+    @*<script>
+          // Set the date we're counting down to
+          var countDownDate = new Date("Sep 25, 2018 16:00:00").getTime();
+
+          // Update the count down every 1 second
+          var x = setInterval(function () {
+
+            // Get todays date and time
+            var now = new Date().getTime();
+
+            // Find the distance between now and the count down date
+            var distance = countDownDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result in the element with id="countdown"
+            document.getElementById("countdown").innerHTML = " " + days + " Days " + hours + " Hr "
+              + minutes + " Min " + seconds + " Sec"+ " left for team registration (Waltham and Richmond)";
+
+            // If the count down is finished, write some text
+            if (distance < 0) {
+              clearInterval(x);
+              document.getElementById("countdown").innerHTML = "<span class='text-danger'>Team registration expired.</span>";
+            }
+          }, 1000);
+        </script>*@
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
