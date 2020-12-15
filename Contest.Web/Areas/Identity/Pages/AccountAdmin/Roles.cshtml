@@ -1,0 +1,16 @@
+﻿@page
+@model Contest.Web.Areas.Identity.Pages.AccountAdmin.RolesModel
+@{
+    ViewData["Title"] = "Roles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="mb-4">All Roles</h4>
+@foreach (var role in Model.Roles)
+{
+    <div class="d-inline p-2 bg-primary"><a class="text-white" href=".\editRole?roleId=@role.Id">@role.Name</a></div>
+}
+
+<div class="mt-4">
+    <a class="btn btn-success" href=".\addrole">Add New Role</a>
+</div>
