@@ -12,7 +12,7 @@ namespace Contest.Models.Score
         {
             Name = propValues[0].Trim();
             IsTeamLead = !string.IsNullOrWhiteSpace(Name) && Name.IndexOf("lead", StringComparison.InvariantCultureIgnoreCase) != -1;
-            Inumber = propValues[1].Trim();
+            OfficeMail = propValues[1].Trim();
             Department = propValues[2].Trim();
         }
 

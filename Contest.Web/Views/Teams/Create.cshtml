@@ -1,80 +1,72 @@
 ﻿@model Contest.Models.Score.TeamViewModel
 
 @{
-  ViewData["Title"] = "Add Team";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Add Team";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h4 class="text-center mt-3">Your Team Detail</h4>
 
 <div class="container h-100">
-  <div class="row h-100 justify-content-center">
-    <div class="col-md-8">
-      <form asp-action="Create" enctype="multipart/form-data">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        <div class="form-group">
-          <label asp-for="TeamName" class="font-weight-bold"></label>
-          <input asp-for="TeamName" class="form-control" required />
-          <span asp-validation-for="TeamName" class="text-danger"></span>
+    <div class="row h-100 justify-content-center">
+        <div class="col-md-8">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label asp-for="TeamName" class="fw-bolder"></label>*
+                    <input asp-for="TeamName" class="form-control" required />
+                    <span asp-validation-for="TeamName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Theme" class="fw-bolder"></label>*
+                    <select asp-for="Theme" asp-items="Html.GetEnumSelectList<Contest.Enums.Theme>()" class="form-control"></select>
+                    <span asp-validation-for="Theme" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ProblemStatement" class="fw-bolder"></label>*
+                    <textarea asp-for="ProblemStatement" class="form-control" rows="3" required></textarea>
+                    <span asp-validation-for="ProblemStatement" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Participants" class="fw-bolder"></label>*
+                    <textarea asp-for="Participants" class="form-control" rows="5" placeholder="Name, Email, Department" required></textarea>
+                    <span asp-validation-for="Participants" class="text-danger"></span>
+                    <div class="alert alert-info" role="alert">
+                        <b>Participants input Format: </b><small>Each participant must be in new line with lead indicated as <b>(Team lead)</b> in name field.</small><br />
+                        Bishnu Rawal, bishnu.rawal@cotiviti.com, R&D3 <br />
+                        Sakar Shrestha (Team Lead), sakar.shrestha@cotiviti.com, Engineering <br />
+                        Sanjeev Shrestha, sanjeev.shrestha@cotiviti.com, HR
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Location" class="fw-bolder"></label>*
+                    <select asp-for="Location" asp-items="@ViewData["locations"] as IEnumerable<SelectListItem>" class="form-control"></select>
+                    <span asp-validation-for="Location" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ITRequirements" class="fw-bolder"></label>
+                    <textarea asp-for="ITRequirements" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="ITRequirements" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="OtherRequirements" class="fw-bolder"></label>
+                    <textarea asp-for="OtherRequirements" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="OtherRequirements" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label for="Avatar" class="form-label fw-bolder">Choose team avatar</label>
+                    <input type="file" asp-for="Avatar" class="form-control">
+                    <small>(Around 500 X 200 image size is perfect. If not sure, you can add your team avatar anytime later.)</small>
+                </div>
+                <div class="mb-3 d-grid">
+                    <input type="submit" value="Submit Team" class="btn btn-success" />
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-          <label asp-for="Theme" class="font-weight-bold"></label>
-          <select asp-for="Theme" asp-items="Html.GetEnumSelectList<Contest.Enums.Theme>()" class="form-control"></select>
-          <span asp-validation-for="Theme" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-          <label asp-for="ProblemStatement" class="font-weight-bold"></label>
-          <textarea asp-for="ProblemStatement" class="form-control" rows="3" required></textarea>
-          <span asp-validation-for="ProblemStatement" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-          <label asp-for="Participants" class="font-weight-bold"></label>
-          <textarea asp-for="Participants" class="form-control" rows="5" placeholder="Name, INumber, Department" required></textarea>
-          <span asp-validation-for="Participants" class="text-danger"></span>
-          <div class="alert alert-info" role="alert">
-            <b>Participants input Format: </b><small>Each participant must be in new line with lead indicated as <b>(Team lead)</b> in name field.</small><br />
-            Bishnu Rawal, i82287, R&D1 <br />
-            Niraj Shah (Team Lead), i65001, R&D1 <br />
-            Sanjeev Shrestha, i81111, GA
-          </div>
-        </div>
-        <div class="form-group">
-          <label asp-for="Location" class="font-weight-bold"></label>
-          <select asp-for="Location" asp-items="@ViewData["locations"] as IEnumerable<SelectListItem>" class="form-control"></select>
-          <span asp-validation-for="Location" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-          <label asp-for="ITRequirements" class="font-weight-bold"></label>
-          <textarea asp-for="ITRequirements" class="form-control" rows="3"></textarea>
-          <span asp-validation-for="ITRequirements" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-          <label asp-for="OtherRequirements" class="font-weight-bold"></label>
-          <textarea asp-for="OtherRequirements" class="form-control" rows="3"></textarea>
-          <span asp-validation-for="OtherRequirements" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-          <div class="custom-file">
-            <input type="file" class="custom-file-input" asp-for="Avatar" id="avatar">
-            <label class="custom-file-label" for="avatar">Choose team avatar</label>
-          </div>
-          <small>(Around 500 X 200 image size is perfect. If not sure, you can add your team avatar anytime later.)</small>
-        </div>
-        <div class="form-group">
-          <input type="submit" value="Submit Our Team" class="btn btn-outline-success btn-block" />
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 @section Scripts {
-  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-  <script>
-    $('#avatar').on('change', function () {
-      var fileName = $(this).val();
-      $(this).next('.custom-file-label').html(fileName);
-    })
-  </script>
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

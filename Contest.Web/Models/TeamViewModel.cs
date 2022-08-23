@@ -84,14 +84,14 @@ namespace Contest.Models.Score
         
         [Required(ErrorMessage = "Enter your participants in provided format.")]
         [DataType(DataType.MultilineText), Display(Name = "Participants")]
-        public string Participants { get; set; } = @"Bishnu Rawal, i82287, R&D1\n\rNiraj Shah (Team Lead), i65001,R&D1";
+        public string Participants { get; set; } = @"Bishnu Rawal, bishnu.rawal@cotiviti.com, R&D1\n\rSakar Shrestha (Team Lead), sakar.shrestha@cotiviti.com, R&D1";
 
         public static string SerializeParticipants(IEnumerable<Participant> participants) =>
             string.Join(Environment.NewLine, participants
                             ?.Select(x => SerializeParticipant(x)));
 
         public static string SerializeParticipant(Participant participant) =>
-            $"{participant.Name}, {participant.Inumber}, {participant.Department}";
+            $"{participant.Name}, {participant.OfficeMail}, {participant.Department}";
 
         public static string SerializeTeam(Team team) =>
             $"{team.TeamName}, {team.TeamCode}, {team.Participants?.FirstOrDefault(x => x.IsTeamLead)?.Name ?? "No Lead Assigned"}, {team.Location}";

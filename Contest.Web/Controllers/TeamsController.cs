@@ -92,10 +92,13 @@ namespace Contest.Web.Controllers
             return View(analytics);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            //if(DateTime.Now > DateTime.Parse("Sep 25, 2018 16:00:00 PM"))
-            //    return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired." });
+            var teamRegistrationConfig = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.TeamRegistration);
+            bool teamRegistrationDisabled = teamRegistrationConfig.Value == "0";
+
+            if(teamRegistrationDisabled)
+                return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration disabled." });
 
             ViewData["locations"] = FetchEventLocationSelectItemList();
             return View();
@@ -106,10 +109,7 @@ namespace Contest.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TeamName,Avatar,Theme,ProblemStatement,ITRequirements,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
-        {
-            //if (teamViewModel.Location.Equals("Kathmandu", StringComparison.InvariantCultureIgnoreCase))
-            //    return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired for Nepal center." });
-
+        {   
             if (ModelState.IsValid)
             {
                 if (!ParticipantsEnteredCorrectly(teamViewModel.Participants))
@@ -123,17 +123,10 @@ namespace Contest.Web.Controllers
                 List<Participant> partcipantsOnDb = _context.Participants
                     .Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).ToList();
 
-                //partcipantsOnDb = _context.Teams
-                //    .Include(x => x.Participants)
-                //    .Where(x => IsCurrentYear(x.CreatedOn))
-                //    .SelectMany(x => x.Participants).ToList();
-
-                
-
-                var alreadyTakenParticipants = partcipantsOnDb.Intersect(participantsDtos, ComplexTypeComparer<Participant>.Create(x => x.Inumber));
+                var alreadyTakenParticipants = partcipantsOnDb.Intersect(participantsDtos, ComplexTypeComparer<Participant>.Create(x => x.OfficeMail));
                 if (alreadyTakenParticipants.Any())
                 {
-                    ModelState.AddModelError("Participants", $"Participants submitted are already involved with other teams: {string.Join(", ", alreadyTakenParticipants.Select(x => x.Name))}. Note: individual participants are distinguished by their INumber.");
+                    ModelState.AddModelError("Participants", $"Participants submitted are already involved with other teams: {string.Join(", ", alreadyTakenParticipants.Select(x => x.Name))}. Note: individual participants are distinguished by their office Email.");
                     ViewData["locations"] = FetchEventLocationSelectItemList();
                     return View(teamViewModel);
                 }
@@ -142,7 +135,6 @@ namespace Contest.Web.Controllers
                 teamViewModel.CreatedBy = User.FindFirst(ClaimTypes.Name)?.Value ?? "";
                 teamViewModel.CreatedOn = DateTime.Now;
                 teamViewModel.TeamCode = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
-
 
                 _context.Add(new Team(teamViewModel, participantsDtos));
                 await _context.SaveChangesAsync();

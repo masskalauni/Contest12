@@ -1,74 +1,120 @@
 ﻿@model IEnumerable<Contest.Models.Score.TeamViewModel>
 
 @{
-  ViewData["Title"] = "All Teams";
-  Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "All Teams";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 
 @if (Model == null || Model.Count() == 0)
 {
-  <h2 class="text-center text-danger">No teams to show.</h2>
+    <h2 class="text-center text-danger">No teams to show.</h2>
 }
 else
 {
-  <div class="card-columns" style="line-height:normal">
-    @foreach (var team in Model)
-    {
-      <div class="card border-success">
-        <img class="card-img-top" src="@(team.AvatarDataUrl ?? "/images/team.png")" alt="Team Avatar">
-        <div class="card-header text-center text-primary">
-          <b>@team.TeamName</b>
-          @if (team.IsCreatedByCurrentUser || User.IsInRole(Contest.Web.Constants.Role.Admin))
-          {
-            <span class="float-right">
-              <a asp-action="Edit" asp-route-identifier="@team.TeamCode" title="Edit Your Team"><ion-icon name="create" size="small"></ion-icon></a>
-              <a asp-action="Delete" asp-route-identifier="@team.TeamCode" title="Delete Your Team"><ion-icon name="trash" size="small"></ion-icon></a>
-            </span>
-          }
-        </div>
-        <div class="card-body p-2 text-center" style="font-size:14px;">
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.ProblemStatement"></label>
-          <p class="mb-2 text-primary">@team.ProblemStatement</p>
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @foreach (var team in Model)
+        {
+            <div class="col">
+                <div class="card">
+                    <img class="card-img-top" src="@(team.AvatarDataUrl ?? "/images/team.png")" alt="Team Avatar">
+                    <div class="card-header text-center text-primary">
+                        <h1 class="display-6">@team.TeamName</h1>
+                        @if (team.IsCreatedByCurrentUser || User.IsInRole(Contest.Web.Constants.Role.Admin))
+                        {
+                            <span class="float-end">
+                                <a asp-action="Edit" asp-route-identifier="@team.TeamCode" title="Edit Your Team"><i class="bi bi-pencil-square"></i></a>
+                                <a asp-action="Delete" asp-route-identifier="@team.TeamCode" title="Delete Your Team"><i class="bi bi-trash3"></i></a>
+                            </span>
+                        }
+                    </div>
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.ProblemStatement"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="text-primary">@team.ProblemStatement</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.Location"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="text-primary">@team.Location</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.Theme"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="text-primary">@team.Theme</p>
+                                </div>
+                            </div>
 
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.Location"></label>
-          <p class="mb-2 text-primary">@team.Location</p>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.Participants"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="mb-2 small text-primary">
+                                        @foreach (var participant in team.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
+                                        {
+                                            var isLead = participant.IndexOf("lead", StringComparison.InvariantCultureIgnoreCase) != -1;
 
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.Theme"></label>
-          <p class="mb-2 text-primary">@team.Theme</p>
+                                            if (isLead)
+                                            {
+                                                <strong title="Team Lead">@participant</strong>
+                                            }
+                                            else
+                                            {
+                                                @participant
+                                            }
+                                            <br />
+                                        }
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.ITRequirements"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="text-primary">@(team.ITRequirements ?? "None")</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.RepoUrl"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="text-primary">@(team.RepoUrl ?? "Will be updated soon")</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold text-success" asp-for="@team.OtherRequirements"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="text-primary">@(team.OtherRequirements ?? "None")</p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4 text-end">
+                                    <label class="fw-bold mb-0 text-success" asp-for="@team.CreatedBy"></label>
+                                </div>
+                                <div class="col-8">
+                                    <p class="mb-2 text-primary">@team.CreatedByFormatted</p>
+                                </div>
+                            </div>
 
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.Participants"></label>
-          <p class="mb-2 small text-primary">
-            @foreach (var participant in team.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
-            {
-              var isLead = participant.IndexOf("lead", StringComparison.InvariantCultureIgnoreCase) != -1;
-
-              if (isLead)
-              {
-                <strong title="Team Lead">@participant</strong>
-              }
-              else
-              {
-                @participant
-              }
-              <br />
-            }
-          </p>
-
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.ITRequirements"></label>
-          <p class="mb-2 text-primary">@(team.ITRequirements ?? "None")</p>
-
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.RepoUrl"></label>
-          <p class="mb-2 text-primary">@(team.RepoUrl ?? "Will be updated soon")</p>
-
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.OtherRequirements"></label>
-          <p class="mb-2 text-primary">@(team.OtherRequirements ?? "None")</p>
-
-          <label class="font-weight-bold mb-0 text-success" asp-for="@team.CreatedBy"></label>
-          <p class="mb-2 text-primary">@team.CreatedByFormatted</p>
-        </div>
-      </div>
-
-    }
-  </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 }
