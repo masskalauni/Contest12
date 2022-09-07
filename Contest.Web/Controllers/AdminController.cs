@@ -12,8 +12,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Contest.Web.Common;
-
+using Contest.Web.Models.Admin;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace Contest.Web.Controllers
 {
@@ -103,7 +104,7 @@ namespace Contest.Web.Controllers
                     AverageBestImplementationScore = g.Average(x => x.BestTechnicalImplementationScore.Value),
                     Theme = g.Key.Theme,
                     Participants = g.Key.Participants
-                }).ToList();            
+                }).ToList();
 
             var finalResult = new FinalResultViewModel
             {
@@ -115,12 +116,36 @@ namespace Contest.Web.Controllers
             return View(finalResult);
         }
 
+        public IActionResult UploadBanner()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadBanner(BannerViewModel bannerViewModel)
+        {
+            await SaveImage(bannerViewModel.Banner);
+            return RedirectToAction("Index", "Home", bannerViewModel);
+        }
+
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
             var teams = await _context.Teams.Where(x => x.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;
+        }
+
+        private static async Task SaveImage(IFormFile image)
+        {
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "banners");
+            Directory.CreateDirectory(folderPath);
+            //var extension = image.FileName[image.FileName.LastIndexOf(".")..];
+            var imageName = "banner.jpg";
+            var filePath = Path.Combine(folderPath, imageName);
+
+            using FileStream fileStream = new(filePath, FileMode.Create);
+            await image.CopyToAsync(fileStream);
         }
 
         public IActionResult Error(string errorCode, string message)

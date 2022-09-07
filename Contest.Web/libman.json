@@ -9,6 +9,10 @@
     {
       "library": "popper.js@2.11.6",
       "destination": "wwwroot/lib/popper.js/"
+    },
+    {
+      "library": "bootstrap-icons@1.9.1",
+      "destination": "wwwroot/lib/bootstrap-icons/"
     }
   ]
 }

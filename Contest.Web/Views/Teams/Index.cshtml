@@ -5,61 +5,60 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 @if (Model == null || Model.Count() == 0)
 {
     <h2 class="text-center text-danger">No teams to show.</h2>
 }
 else
 {
-    <div class="row row-cols-1 row-cols-md-3 g-3">
+    <div class="row row-cols-1 row-cols-md-2 g-3">
         @foreach (var team in Model)
         {
             <div class="col">
                 <div class="card">
                     <img class="card-img-top" src="@(team.AvatarDataUrl ?? "/images/team.png")" alt="Team Avatar">
                     <div class="card-header text-center text-primary">
-                        <h1 class="display-6">@team.TeamName</h1>
+                        <span class="display-6">@team.TeamName</span>
                         @if (team.IsCreatedByCurrentUser || User.IsInRole(Contest.Web.Constants.Role.Admin))
                         {
                             <span class="float-end">
-                                <a asp-action="Edit" asp-route-identifier="@team.TeamCode" title="Edit Your Team"><i class="bi bi-pencil-square"></i></a>
-                                <a asp-action="Delete" asp-route-identifier="@team.TeamCode" title="Delete Your Team"><i class="bi bi-trash3"></i></a>
+                                <a asp-action="Edit" asp-route-identifier="@team.TeamCode" title="Edit Your Team"><i class="bi bi-pencil-square fs-2 text-warning"></i></a>
+                                <a asp-action="Delete" asp-route-identifier="@team.TeamCode" title="Delete Your Team"><i class="bi bi-trash3 fs-2 text-danger"></i></a>
                             </span>
                         }
                     </div>
                     <div class="card-body">
                         <div class="container">
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.ProblemStatement"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="text-primary">@team.ProblemStatement</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.Location"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="text-primary">@team.Location</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.Theme"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="text-primary">@team.Theme</p>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.Participants"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="mb-2 small text-primary">
                                         @foreach (var participant in team.Participants.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
                                         {
@@ -79,34 +78,34 @@ else
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.ITRequirements"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="text-primary">@(team.ITRequirements ?? "None")</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.RepoUrl"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="text-primary">@(team.RepoUrl ?? "Will be updated soon")</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold text-success" asp-for="@team.OtherRequirements"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="text-primary">@(team.OtherRequirements ?? "None")</p>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-4 text-end">
+                                <div class="col-3 text-end">
                                     <label class="fw-bold mb-0 text-success" asp-for="@team.CreatedBy"></label>
                                 </div>
-                                <div class="col-8">
+                                <div class="col-9">
                                     <p class="mb-2 text-primary">@team.CreatedByFormatted</p>
                                 </div>
                             </div>
