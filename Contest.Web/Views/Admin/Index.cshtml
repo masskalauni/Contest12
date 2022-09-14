@@ -1,8 +1,8 @@
 ﻿@model Contest.Models.Result.FinalResultViewModel
-
+@using System.Globalization;
 @{
     ViewData["Title"] = "Result Section";
-    var judges = Model.JudgesScores.Select(x => System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(x.Judge)).Distinct().ToList();
+    var judges = Model.JudgesScores.GroupBy(x => x.Judge).Select(y => new { Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(y.Key), TeamsEvaluated = y.Count() });
     var plainOrderTeams = Model.TeamsScores.OrderByDescending(x => x.AveragePlainAverage).ToList();
     var bestIdeaTeams = Model.TeamsScores.OrderByDescending(x => x.AverageBestIdeaScore).ToList();
     var bestImplementationTeams = Model.TeamsScores.OrderByDescending(x => x.AverageBestImplementationScore).ToList();
@@ -29,13 +29,13 @@
 </ul>
 
 <div class="tab-content" id="v-pills-tabContent">
-    <div class="tab-pane fade show active" id="h-judges" role="tabpanel" aria-labelledby="h-judges-tab">
+    <div class="tab-pane fade show active d-flex justify-content-center" id="h-judges" role="tabpanel" aria-labelledby="h-judges-tab">
         <ul class="list-group list-group-flush p-5">
-            @foreach (var judgeName in judges)
+            @foreach (var judge in judges)
             {
                 <li class="list-group-item fs-4">
-                    <span>@(sn++).</span> @judgeName
-                    <span class="badge bg-primary rounded-pill fs-5" title="Teams Evaluated">8</span>
+                    <span>@(sn++). @judge.Name</span>                    
+                    <span class="text-info float-end">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Evaluated <b>@judge.TeamsEvaluated</b> Teams</span>
                 </li>
             }
         </ul>

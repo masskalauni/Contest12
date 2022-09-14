@@ -3,16 +3,20 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootstrap@5.2.0",
-      "destination": "wwwroot/lib/bootstrap/"
-    },
-    {
       "library": "popper.js@2.11.6",
       "destination": "wwwroot/lib/popper.js/"
     },
     {
       "library": "bootstrap-icons@1.9.1",
       "destination": "wwwroot/lib/bootstrap-icons/"
+    },
+    {
+      "library": "choices.js@10.1.0",
+      "destination": "wwwroot/lib/choices.js/"
+    },
+    {
+      "library": "bootstrap@5.2.1",
+      "destination": "wwwroot/lib/bootstrap/"
     }
   ]
 }

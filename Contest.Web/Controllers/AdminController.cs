@@ -11,10 +11,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Contest.Web.Models.Admin;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Contest.Enums;
 
 namespace Contest.Web.Controllers
 {
@@ -22,12 +22,10 @@ namespace Contest.Web.Controllers
     public class AdminController : Controller
     {
         private readonly KolpiDbContext _context;
-        private readonly IConfiguration _configuration;
 
-        public AdminController(KolpiDbContext context, IConfiguration configuration)
+        public AdminController(KolpiDbContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -40,12 +38,18 @@ namespace Contest.Web.Controllers
 
             if (!allowFinalResult)
                 return View("Error", new ErrorViewModel { ErrorCode = "Final Result Disabled", Message = "Final result not disclosed yet to avoid bias and judgement conflicts." });
+                        
+            List<JudgeScore> judgeScores = await _context.JudgeScores
+                    .Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year)
+                    .Include(x => x.Team.Participants)
+                    .Include(u => u.KolpiUser)
+                    .ToListAsync();
 
-            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
             List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
             {
-                Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
+                Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name)),
             }).ToList();
+
 
             (IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded, List<ParticipantVoteViewModel> allVoteViewModels) peopleChoices = default;
 

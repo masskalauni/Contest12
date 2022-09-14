@@ -1,4 +1,5 @@
 ﻿using Contest.Enums;
+using Contest.Web.Constants;
 using System.Collections.Generic;
 
 namespace Contest.Models.Score

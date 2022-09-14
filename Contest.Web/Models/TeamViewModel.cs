@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Contest.Enums;
+using Contest.Web.Constants;
 using Microsoft.AspNetCore.Http;
 
 namespace Contest.Models.Score

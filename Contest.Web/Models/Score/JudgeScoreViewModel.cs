@@ -72,7 +72,6 @@ namespace Contest.Models.Score
             + PresentationScore * .15f;
 
         public string Judge { get; set; }
-
         public JudgeScoreViewModel() { }
         public JudgeScoreViewModel(JudgeScore judgeScore)
         {
@@ -86,7 +85,7 @@ namespace Contest.Models.Score
             Theme = judgeScore.Team.Theme;
 
             var userName = judgeScore.KolpiUser?.UserName;
-            userName = userName?.Substring(0, userName.IndexOf('@'));
+            userName = userName?[..userName.IndexOf('@')];
             userName = userName?.Replace('.', ' ');
             Judge = userName ?? "N/A";
         }

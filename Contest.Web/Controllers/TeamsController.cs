@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Contest.Web.Constants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Contest.Enums;
 using Contest.Web.Models;
 using Contest.Web.Common;
+using Contest.Enums;
 
 namespace Contest.Web.Controllers
 {

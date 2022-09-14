@@ -15,6 +15,7 @@
         <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
         <link rel="stylesheet" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" />
     </environment>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-info" style="line-height:normal">
@@ -51,9 +52,11 @@
                             <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"> People's Choice Award</a>
                             <div class="dropdown-menu">
                                 <a class="dropdown-item" asp-controller="PeoplesChoice" asp-action="VoteTeams">
-                                    <i class="bi bi-check2"></i> Vote Your Top 5</a>
+                                    <i class="bi bi-check2"></i> Vote Your Top 5
+                                </a>
                                 <a class="dropdown-item" asp-controller="PeoplesChoice" asp-action="AllVotes">
-                                    <i class="bi bi-trophy"></i> Final Result</a>
+                                    <i class="bi bi-trophy"></i> Final Result
+                                </a>
                             </div>
                         </li>
                         @if (User.IsInRole(Contest.Web.Constants.Role.Admin) || User.IsInRole(Contest.Web.Constants.Role.SuperAdmin))
@@ -65,7 +68,8 @@
                                         <i class="bi bi-list-check"></i> All Surveys
                                     </a>
                                     <a class="dropdown-item" asp-controller="Survey" asp-action="CreateSurveyThread">
-                                        <i class="bi bi-plus-lg"></i> Create New Survey</a>
+                                        <i class="bi bi-plus-lg"></i> Create New Survey
+                                    </a>
                                 </div>
                             </li>
                             <li class="nav-item dropdown">
@@ -129,11 +133,13 @@
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/popper.js/umd/popper.js"></script>
-        <script src="~/lib/bootstrap/js/bootstrap.js"></script>    </environment>
+        <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    </environment>
     <environment exclude="Development">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="~/lib/popper.js/umd/popper.min.js"></script>
         <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
-    </environment>@RenderSection("Scripts", required: false)
+    </environment>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

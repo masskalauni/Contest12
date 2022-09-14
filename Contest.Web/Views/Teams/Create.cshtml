@@ -1,8 +1,11 @@
-﻿@model Contest.Models.Score.TeamViewModel
+﻿@using Contest.Enums
+@using Contest.Web.Data
+@model Contest.Models.Score.TeamViewModel
 
 @{
     ViewData["Title"] = "Add Team";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var themeChoices = Enum.GetNames(typeof(Theme));
 }
 
 <h4 class="text-center mt-3">Your Team Detail</h4>
@@ -18,7 +21,8 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Theme" class="fw-bolder"></label>*
-                    <select asp-for="Theme" asp-items="Html.GetEnumSelectList<Contest.Enums.Theme>()" class="form-control"></select>
+                    @*<select asp-for="Theme" asp-items="Html.GetEnumSelectList<Contest.Enums.Theme>()" class="form-control"></select>*@
+                    <select asp-for="Theme" class="form-control" multiple></select>
                     <span asp-validation-for="Theme" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
@@ -65,8 +69,60 @@
     </div>
 </div>
 
-@section Scripts {
+@section Styles {
+    <link rel="stylesheet" href="/lib/choices.js/choices.min.css" />
+}
+
+    @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script src="/lib/choices.js/choices.min.js"></script>
+
+    <script>
+        var themeSelectList = document.getElementById("Theme");
+        var themes = [
+            "OpenIdea",
+            "ChatBots",
+            "AI",
+            "DataScience",
+            "Optimization",
+            "Automation",
+            "BigDataTechnologies",
+            "Visualization",
+            "Reporting",
+            "ExploreTools",
+            "Security",
+            "DeepLearing",
+            "Architecture",
+            "Upgrade",
+            "MSTeams",
+            "Hadoop",
+            "CSharp",
+            "Java",
+            "Python",
+            "JavaScript",
+            "Angular",
+            "React",
+            "Vue",
+            "Blazor",
+            "WebAssembly",
+            "RestApi",
+            "Benchmarking",
+            "Kubernetes",
+            "Aws",
+            "Azure",
+            "Containerization",
+            "Docker"
+        ];
+
+        var choiceList = themes.map(x => { value: x, label: x });
+        const choices = new Choices(themeSelectList, {
+            silent: false,
+            items: [],
+            removeItemButton: true,
+            choices: choiceList
+        });
+    </script>
     }
+

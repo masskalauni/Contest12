@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Contest.Enums;
 using System.IO;
+using Contest.Enums;
+using Contest.Web.Constants;
 
 namespace Contest.Models.Score
 {
