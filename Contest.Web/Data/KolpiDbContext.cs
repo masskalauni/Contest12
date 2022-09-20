@@ -1,8 +1,10 @@
 ﻿using Contest.Models.Score;
 using Contest.Models.Survey;
+using Contest.Web.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Contest.Data
 {
@@ -47,6 +49,12 @@ namespace Contest.Data
 
             builder.Entity<SurveyThread>()
                 .HasOne(a => a.KolpiUser);
+
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = Role.SuperAdmin },
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = Role.Admin },
+                new IdentityRole { Id = Guid.NewGuid().ToString(), Name = Role.Participant }
+            );
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Contest.Enums;
 using Microsoft.AspNetCore.Http;
 
 namespace Contest.Models.Score
@@ -18,7 +17,7 @@ namespace Contest.Models.Score
             Id = team.Id;
             TeamCode = team.TeamCode;
             TeamName = team.TeamName;
-            Theme = team.Theme;
+            Themes = team.Theme.Split(",", StringSplitOptions.RemoveEmptyEntries).ToList();
             ProblemStatement = team.ProblemStatement;
             ITRequirements = team.ITRequirements;
             OtherRequirements = team.OtherRequirements;
@@ -51,8 +50,8 @@ namespace Contest.Models.Score
         public IFormFile Avatar { get; set; }
         public string AvatarDataUrl { get; set; }
 
-        [Required, EnumDataType(typeof(Theme))]
-        public Theme Theme { get; set; } = Theme.OpenIdea;
+        [Required(ErrorMessage = "Please select at last one theme")]
+        public List<string> Themes { get; set; }
 
         [Required(ErrorMessage = "Provide your team's problem statement summary")]
         [DataType(DataType.MultilineText), Display(Name = "Problem Statement")]
@@ -81,20 +80,20 @@ namespace Contest.Models.Score
 
         public string CreatedByFormatted { get; set; }
         public bool IsCreatedByCurrentUser { get; set; }
-        
+
         [Required(ErrorMessage = "Enter your participants in provided format.")]
         [DataType(DataType.MultilineText), Display(Name = "Participants")]
-        public string Participants { get; set; } = @"Bishnu Rawal, i82287, R&D1\n\rNiraj Shah (Team Lead), i65001,R&D1";
+        public string Participants { get; set; } = @"Bishnu Rawal, bishnu.rawal@cotiviti.com, R&D1\n\rSakar Shrestha (Team Lead), sakar.shrestha@cotiviti.com, R&D1";
 
         public static string SerializeParticipants(IEnumerable<Participant> participants) =>
             string.Join(Environment.NewLine, participants
                             ?.Select(x => SerializeParticipant(x)));
 
-        public static string SerializeParticipant(Participant participant) =>
-            $"{participant.Name}, {participant.Inumber}, {participant.Department}";
+        public static (string, string, string, string) SerializeParticipant(Participant participant) =>
+            (participant.Name, participant.OfficeMail, participant?.Team?.TeamName ?? "N/A", participant.Department);
 
-        public static string SerializeTeam(Team team) =>
-            $"{team.TeamName}, {team.TeamCode}, {team.Participants?.FirstOrDefault(x => x.IsTeamLead)?.Name ?? "No Lead Assigned"}, {team.Location}";
+        public static (string, string, int) SerializeTeam(Team team) =>
+            (team.TeamName, team.Theme, team.Participants.Count);
 
         public static IList<Participant> DeserializeParticipants(string participants) =>
             participants?.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries)

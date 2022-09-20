@@ -7,88 +7,90 @@
     string allowEditTitle = allowEdit ? "" : "Score edit diabled";
 
 }
-<div class="row">
-    <div class="col"><a asp-action="Create" class="btn btn-outline-info float-right mb-2"><ion-icon name="add" class="align-middle"></ion-icon> <span class="align-middle font-weight-bold">Evaluate New Team</span></a></div>
-</div>
+<div class="p-2">
+    <div class="row">
+        <div class="col"><a asp-action="Create" class="btn btn-outline-info float-right mb-2"><ion-icon name="add" class="align-middle"></ion-icon> <span class="align-middle font-weight-bold">Evaluate New Team</span></a></div>
+    </div>
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover table-sm">
-        <thead class="thead-dark">
-            <tr>
-                <th scope="col"></th>
-                <th scope="col">#</th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.Team)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.InnovationScore)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.UsefulnessScore)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.QualityScore)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.CompanyValueScore)
-                </th>
-                <th scope="col">
-                    @Html.DisplayNameFor(model => model.PresentationScore)
-                </th>
-                <th scope="col">
-                    Average
-                </th>
-                <th scope="col">
-                    WBIS
-                </th>
-                <th scope="col">
-                    WBTIS
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-sm">
+            <thead class="thead-dark">
                 <tr>
-                    <td scope="row" title="@allowEditTitle">
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="@allowEditClass"><ion-icon name="create"></ion-icon></a>
-                    </td>
-                    <td scope="row">
-                        @(++sn)
-                    </td>
-                    <td>
-                        <strong>@Html.DisplayFor(modelItem => item.Team)</strong>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.InnovationScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.UsefulnessScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.QualityScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CompanyValueScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PresentationScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AverageScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BestIdeaScore)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.BestTechnicalImplementationScore)
-                    </td>
+                    <th scope="col"></th>
+                    <th scope="col">#</th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.Team)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.InnovationScore)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.UsefulnessScore)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.QualityScore)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.CompanyValueScore)
+                    </th>
+                    <th scope="col">
+                        @Html.DisplayNameFor(model => model.PresentationScore)
+                    </th>
+                    <th scope="col">
+                        Average
+                    </th>
+                    <th scope="col">
+                        WBIS
+                    </th>
+                    <th scope="col">
+                        WBTIS
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-    <p><b>Average</b> - @Html.DisplayNameFor(model => model.AverageScore)</p>
-    <p><b>WBIS</b> - @Html.DisplayNameFor(model => model.BestIdeaScore)</p>
-    <p><b>WBTIS</b> - @Html.DisplayNameFor(model => model.BestTechnicalImplementationScore)</p>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td scope="row" title="@allowEditTitle">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="@allowEditClass"><i class="bi-pencil-square"></i></a>
+                        </td>
+                        <td scope="row">
+                            @(++sn)
+                        </td>
+                        <td>
+                            <strong>@Html.DisplayFor(modelItem => item.Team)</strong>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InnovationScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UsefulnessScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QualityScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CompanyValueScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PresentationScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AverageScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BestIdeaScore)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.BestTechnicalImplementationScore)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <p><b>Average</b> - @Html.DisplayNameFor(model => model.AverageScore)</p>
+        <p><b>WBIS</b> - @Html.DisplayNameFor(model => model.BestIdeaScore)</p>
+        <p><b>WBTIS</b> - @Html.DisplayNameFor(model => model.BestTechnicalImplementationScore)</p>
 
+    </div>
 </div>

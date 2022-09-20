@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Contest.Web.Common;
-
+using Contest.Web.Models.Admin;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Contest.Enums;
+using Contest.Web.Extensions;
 
 namespace Contest.Web.Controllers
 {
@@ -21,12 +23,10 @@ namespace Contest.Web.Controllers
     public class AdminController : Controller
     {
         private readonly KolpiDbContext _context;
-        private readonly IConfiguration _configuration;
 
-        public AdminController(KolpiDbContext context, IConfiguration configuration)
+        public AdminController(KolpiDbContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
         public async Task<IActionResult> Index()
@@ -39,12 +39,18 @@ namespace Contest.Web.Controllers
 
             if (!allowFinalResult)
                 return View("Error", new ErrorViewModel { ErrorCode = "Final Result Disabled", Message = "Final result not disclosed yet to avoid bias and judgement conflicts." });
+                        
+            List<JudgeScore> judgeScores = await _context.JudgeScores
+                    .Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year)
+                    .Include(x => x.Team.Participants)
+                    .Include(u => u.KolpiUser)
+                    .ToListAsync();
 
-            List<JudgeScore> judgeScores = await _context.JudgeScores.Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Team.Participants).Include(u => u.KolpiUser).ToListAsync();
             List<JudgeScoreViewModel> judgeScoresViewModels = judgeScores.Select(x => new JudgeScoreViewModel(x)
             {
-                Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name))
+                Participants = string.Join(",", x.Team.Participants.ToList().Select(s => s.Name)),
             }).ToList();
+
 
             (IList<(string Code, string Detail, int FinalScore)> allTeamsScoreAdded, List<ParticipantVoteViewModel> allVoteViewModels) peopleChoices = default;
 
@@ -101,9 +107,9 @@ namespace Contest.Web.Controllers
                     AveragePlainAverage = g.Average(x => x.AverageScore.Value),
                     AverageBestIdeaScore = g.Average(x => x.BestIdeaScore.Value),
                     AverageBestImplementationScore = g.Average(x => x.BestTechnicalImplementationScore.Value),
-                    Theme = g.Key.Theme,
+                    Themes = g.Key.Theme.ToStringList(),
                     Participants = g.Key.Participants
-                }).ToList();            
+                }).ToList();
 
             var finalResult = new FinalResultViewModel
             {
@@ -115,12 +121,36 @@ namespace Contest.Web.Controllers
             return View(finalResult);
         }
 
+        public IActionResult UploadBanner()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadBanner(BannerViewModel bannerViewModel)
+        {
+            await SaveImage(bannerViewModel.Banner);
+            return RedirectToAction("Index", "Home", bannerViewModel);
+        }
+
         private async Task<IList<(string Value, string Text)>> GetTeamsFormatted()
         {
             var teams = await _context.Teams.Where(x => x.CreatedOn.Year == DateTime.Now.Year).Include(x => x.Participants).ToListAsync();
             IList<(string Value, string Text)> teamList = teams.Select(t => (t.TeamCode,
                 $"{t.TeamName} ({t.Theme.ToString()} - {string.Join(", ", t.Participants.Select(x => x.Name.Split()[0]))} )")).ToList();
             return teamList;
+        }
+
+        private static async Task SaveImage(IFormFile image)
+        {
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", "banners");
+            Directory.CreateDirectory(folderPath);
+            //var extension = image.FileName[image.FileName.LastIndexOf(".")..];
+            var imageName = "banner.jpg";
+            var filePath = Path.Combine(folderPath, imageName);
+
+            using FileStream fileStream = new(filePath, FileMode.Create);
+            await image.CopyToAsync(fileStream);
         }
 
         public IActionResult Error(string errorCode, string message)

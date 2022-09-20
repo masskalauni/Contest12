@@ -1,4 +1,5 @@
-﻿@model Contest.Models.Score.TeamViewModel
+﻿@using Contest.Enums
+@model Contest.Models.Score.TeamViewModel
 
 @{
   ViewData["Title"] = "Edit Team";
@@ -19,9 +20,9 @@
           <span asp-validation-for="TeamName" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="Theme" class="font-weight-bold"></label>
-          <select asp-for="Theme" asp-items="Html.GetEnumSelectList<Contest.Enums.Theme>()" class="form-control"></select>
-          <span asp-validation-for="Theme" class="text-danger"></span>
+          <label asp-for="Themes" class="font-weight-bold"></label>
+          <select asp-for="Themes" asp-items="Html.GetEnumSelectList<Theme>()" class="form-control"></select>
+          <span asp-validation-for="Themes" class="text-danger"></span>
         </div>
         <div class="form-group">
           <label asp-for="ProblemStatement" class="font-weight-bold"></label>

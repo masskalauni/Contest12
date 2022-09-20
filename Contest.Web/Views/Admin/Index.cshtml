@@ -1,8 +1,8 @@
 ﻿@model Contest.Models.Result.FinalResultViewModel
-
+@using System.Globalization;
 @{
     ViewData["Title"] = "Result Section";
-    var judges = Model.JudgesScores.Select(x => System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(x.Judge)).Distinct().ToList();
+    var judges = Model.JudgesScores.GroupBy(x => x.Judge).Select(y => new { Name = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(y.Key), TeamsEvaluated = y.Count() });
     var plainOrderTeams = Model.TeamsScores.OrderByDescending(x => x.AveragePlainAverage).ToList();
     var bestIdeaTeams = Model.TeamsScores.OrderByDescending(x => x.AverageBestIdeaScore).ToList();
     var bestImplementationTeams = Model.TeamsScores.OrderByDescending(x => x.AverageBestImplementationScore).ToList();
@@ -10,40 +10,43 @@
     int sn = 1;
 }
 
-<ul class="nav nav-pills mb-2 nav-fill border border-success" id="v-pills-tab" role="tablist">
-    <li class="nav-item">
-        <a class="nav-link active rounded-0" id="h-judges-tab" data-toggle="pill" href="#h-judges" role="tab" aria-controls="h-judges" aria-selected="true">Judge Panel</a>
+<ul class="nav nav-tabs" id="v-pills-tab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-0" id="h-judges-tab" data-bs-toggle="tab" data-bs-target="#h-judges" role="tab" aria-controls="h-judges" aria-selected="true">Judge Panel</button>
     </li>
-    <li class="nav-item">
-        <a class="nav-link rounded-0" id="v-plain-result-tab" data-toggle="pill" href="#v-plain-result" role="tab" aria-controls="v-plain-result" aria-selected="false">Plain Ranking</a>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-0" id="v-plain-result-tab" data-bs-toggle="tab" data-bs-target="#v-plain-result" role="tab" aria-controls="v-plain-result" aria-selected="false">Plain Ranking</button>
     </li>
-    <li class="nav-item">
-        <a class="nav-link rounded-0" id="v-best-idea-result-tab" data-toggle="pill" href="#v-best-idea-result" role="tab" aria-controls="v-best-idea-result" aria-selected="false">Best Idea Ranking</a>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-0" id="v-best-idea-result-tab" data-bs-toggle="tab" data-bs-target="#v-best-idea-result" role="tab" aria-controls="v-best-idea-result" aria-selected="false">Best Idea Ranking</button>
     </li>
-    <li class="nav-item">
-        <a class="nav-link rounded-0" id="v-best-impl-result-tab" data-toggle="pill" href="#v-best-impl-result" role="tab" aria-controls="v-best-impl-result" aria-selected="false">Best Implementation Ranking</a>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-0" id="v-best-impl-result-tab" data-bs-toggle="tab" data-bs-target="#v-best-impl-result" role="tab" aria-controls="v-best-impl-result" aria-selected="false">Best Implementation Ranking</button>
     </li>
-    <li class="nav-item">
-        <a class="nav-link rounded-0" id="v-peoples-choice-tab" data-toggle="pill" href="#v-peoples-choice" role="tab" aria-controls="v-peoples-choice" aria-selected="false">People's Choice Ranking</a>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link rounded-0" id="v-peoples-choice-tab" data-bs-toggle="tab" data-bs-target="#v-peoples-choice" role="tab" aria-controls="v-peoples-choice" aria-selected="false">People's Choice Ranking</button>
     </li>
 </ul>
 
 <div class="tab-content" id="v-pills-tabContent">
-    <div class="tab-pane fade show active" id="h-judges" role="tabpanel" aria-labelledby="h-judges-tab">
-        <ul class="list-group list-group-flush">
-            @foreach (var judgeName in judges)
+    <div class="tab-pane fade show active d-flex justify-content-center" id="h-judges" role="tabpanel" aria-labelledby="h-judges-tab">
+        <ul class="list-group list-group-flush p-5">
+            @foreach (var judge in judges)
             {
-                <li class="list-group-item font-weight-bold"><span>@(sn++).</span> @judgeName</li>
+                <li class="list-group-item fs-4">
+                    <span>@(sn++). @judge.Name</span>                    
+                    <span class="text-info float-end">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Evaluated <b>@judge.TeamsEvaluated</b> Teams</span>
+                </li>
             }
         </ul>
     </div>
-    <div class="tab-pane fade pt-2 border border-success" id="v-plain-result" role="tabpanel" aria-labelledby="v-plain-result-tab">
+    <div class="tab-pane fade pt-2" id="v-plain-result" role="tabpanel" aria-labelledby="v-plain-result-tab">
         <div class="row  mx-0">
             @for (int i = 0; i < plainOrderTeams.Count; i++)
             {
                 var teamName = plainOrderTeams[i].TeamName;
                 var teamScore = $"{plainOrderTeams[i].AveragePlainAverage:0.000}";
-                var theme = plainOrderTeams[i].Theme.ToString();
+                var theme = plainOrderTeams[i].Themes.ToStringFormatted();
                 var participants = plainOrderTeams[i].Participants;
                 var title = $"{theme} - {participants}";
 
@@ -71,13 +74,13 @@
             }
         </div>
     </div>
-    <div class="tab-pane fade pt-2 border border-success" id="v-best-idea-result" role="tabpanel" aria-labelledby="v-best-idea-result-tab">
+    <div class="tab-pane fade pt-2" id="v-best-idea-result" role="tabpanel" aria-labelledby="v-best-idea-result-tab">
         <div class="row  mx-0">
             @for (int i = 0; i < bestIdeaTeams.Count; i++)
             {
                 var teamName = bestIdeaTeams[i].TeamName;
                 var teamScore = $"{bestIdeaTeams[i].AverageBestIdeaScore:0.000}";
-                var theme = bestIdeaTeams[i].Theme.ToString();
+                var theme = bestIdeaTeams[i].Themes.ToStringFormatted();
                 var participants = bestIdeaTeams[i].Participants;
                 var title = $"{theme} - {participants}";
 
@@ -105,13 +108,13 @@
             }
         </div>
     </div>
-    <div class="tab-pane fade pt-2 border border-success" id="v-best-impl-result" role="tabpanel" aria-labelledby="v-best-impl-result-tab">
+    <div class="tab-pane fade pt-2" id="v-best-impl-result" role="tabpanel" aria-labelledby="v-best-impl-result-tab">
         <div class="row mx-0">
             @for (int i = 0; i < bestImplementationTeams.Count; i++)
             {
                 var teamName = bestImplementationTeams[i].TeamName;
                 var teamScore = $"{bestImplementationTeams[i].AverageBestImplementationScore:0.000}";
-                var theme = bestImplementationTeams[i].Theme.ToString();
+                var theme = bestImplementationTeams[i].Themes.ToStringFormatted();
                 var participants = bestImplementationTeams[i].Participants;
                 var title = $"{theme} - {participants}";
 

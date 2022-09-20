@@ -6,40 +6,40 @@
     <div class="row">
         <div class="col-md-6">
             <form asp-action="Create">
-                <div class="form-group">
-                    <label asp-for="Team" class="control-label font-weight-bold"></label>
+                <div class="mb-3">
+                    <label asp-for="Team" class="form-label font-weight-bold"></label>
                     <select asp-for="Team" class='form-control' asp-items="Model.Teams">
                         <option value="" selected>Please Select team...</option>
                     </select>
                     <span asp-validation-for="Team" class="text-danger"></span>
                 </div>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <label asp-for="InnovationScore" class="control-label font-weight-bold"></label>
+                <div class="mb-3">
+                    <label asp-for="InnovationScore" class="form-label font-weight-bold"></label>
                     <input asp-for="InnovationScore" placeholder="Add Idea and Team Score" class="form-control" />
                     <span asp-validation-for="InnovationScore" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="UsefulnessScore" class="control-label font-weight-bold"></label>
+                <div class="mb-3">
+                    <label asp-for="UsefulnessScore" class="form-label font-weight-bold"></label>
                     <input asp-for="UsefulnessScore" placeholder="Add Usefulness Score" class="form-control" />
                     <span asp-validation-for="UsefulnessScore" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="QualityScore" class="control-label font-weight-bold"></label>
+                <div class="mb-3">
+                    <label asp-for="QualityScore" class="form-label font-weight-bold"></label>
                     <input asp-for="QualityScore" placeholder="Add Implementation Score" class="form-control" />
                     <span asp-validation-for="QualityScore" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="CompanyValueScore" class="control-label font-weight-bold"></label>
+                <div class="mb-3">
+                    <label asp-for="CompanyValueScore" class="form-label font-weight-bold"></label>
                     <input asp-for="CompanyValueScore" placeholder="Add Experience Score" class="form-control" />
                     <span asp-validation-for="CompanyValueScore" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="PresentationScore" class="control-label font-weight-bold"></label>
+                <div class="mb-3">
+                    <label asp-for="PresentationScore" class="form-label font-weight-bold"></label>
                     <input asp-for="PresentationScore" placeholder="Add Pitching Score" class="form-control" />
                     <span asp-validation-for="PresentationScore" class="text-danger"></span>
                 </div>
-                <div class="form-group">
+                <div class="mb-3">
                     <input id="submitscore" type="submit" value="Submit Score" class="btn btn-success w-100" />
                 </div>
             </form>
@@ -47,7 +47,7 @@
 
         <div class="col-md-6">
             <div class="alert alert-info alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 <p class="font-weight-bold">Score values range from 0 to 10 and can be integer or decimal numbers (e.g. 4, 6.5, 9.5 etc.)</p>
             </div>
             <div class="alert alert-info" role="alert">

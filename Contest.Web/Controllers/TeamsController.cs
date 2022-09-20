@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Authorization;
 using Contest.Web.Constants;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Contest.Enums;
 using Contest.Web.Models;
 using Contest.Web.Common;
+using Contest.Enums;
 
 namespace Contest.Web.Controllers
 {
@@ -42,6 +42,7 @@ namespace Contest.Web.Controllers
             var teamViewModels = teams.Select(x => new TeamViewModel(x, currentUserName));
             return View(teamViewModels);
         }
+
         public async Task<IActionResult> LastYearParticipants()
         {
             var teams = await _context.Teams
@@ -60,42 +61,26 @@ namespace Contest.Web.Controllers
                 .Include(team => team.Participants)
                 .Where(x => x.CreatedOn.Year == DateTime.Now.Year)
                 .ToListAsync();
+            
             var analytics = new TeamAnalyticsViewModel
             {
                 TotalTeams = teams.Count,
-                TotalParticipants = teams.Sum(x => x.Participants.Count),
-                TeamsByTheme = teams.GroupBy(x => x.Theme)
-                    .OrderBy(y => y.Key)
-                    .Select(teamGroup => (teamGroup.Key, teamGroup.Count(),
-                        teamGroup.Select(x => x.TeamName).ToList())).ToList(),
-                TeamsByLocation = teams.GroupBy(x => x.Location)
-                    .OrderBy(y => y.Key)
-                    .Select(teamGroup => (teamGroup.Key, teamGroup.Count(),
-                        teamGroup.Select(z => z.TeamName).ToList())).ToList(),
+                TotalParticipants = teams.Sum(x => x.Participants.Count),                
                 AllParticipants = teams.SelectMany(x => x.Participants.Select(y => TeamViewModel.SerializeParticipant(y))).ToList(),
                 AllTeams = teams.Select(x => TeamViewModel.SerializeTeam(x)).ToList(),
                 TeamRequirements = teams.Select(x => (x.TeamName, x.ITRequirements, x.OtherRequirements)).ToList()
-
-            };
-
-            //Count selected themes eagerly, we are adding not chosen ones to same list
-            analytics.ThemesSelectedCount = analytics.TeamsByTheme.Count;
-
-            //Append themes not chosen by any teams
-            var themesNotChosen = Enum.GetNames(typeof(Theme)).Except(analytics.TeamsByTheme.Select(x => x.Theme.ToString()));
-
-            foreach (var themeNotChosen in themesNotChosen)
-            {
-                analytics.TeamsByTheme.Add((Theme: Enum.Parse<Theme>(themeNotChosen), TeamCount: 0, TeamList: null));
-            }            
+            };            
 
             return View(analytics);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            //if(DateTime.Now > DateTime.Parse("Sep 25, 2018 16:00:00 PM"))
-            //    return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired." });
+            var teamRegistrationConfig = await _context.Settings.FirstOrDefaultAsync(x => x.Name == Setting.TeamRegistration);
+            bool teamRegistrationDisabled = teamRegistrationConfig.Value == "0";
+
+            if(teamRegistrationDisabled)
+                return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration disabled." });
 
             ViewData["locations"] = FetchEventLocationSelectItemList();
             return View();
@@ -106,10 +91,7 @@ namespace Contest.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TeamName,Avatar,Theme,ProblemStatement,ITRequirements,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
-        {
-            //if (teamViewModel.Location.Equals("Kathmandu", StringComparison.InvariantCultureIgnoreCase))
-            //    return RedirectToAction("Error", "Home", new ErrorViewModel { ErrorCode = "Registration", Message = "Team registration expired for Nepal center." });
-
+        {   
             if (ModelState.IsValid)
             {
                 if (!ParticipantsEnteredCorrectly(teamViewModel.Participants))
@@ -123,17 +105,10 @@ namespace Contest.Web.Controllers
                 List<Participant> partcipantsOnDb = _context.Participants
                     .Where(x => x.Team.CreatedOn.Year == DateTime.Now.Year).ToList();
 
-                //partcipantsOnDb = _context.Teams
-                //    .Include(x => x.Participants)
-                //    .Where(x => IsCurrentYear(x.CreatedOn))
-                //    .SelectMany(x => x.Participants).ToList();
-
-                
-
-                var alreadyTakenParticipants = partcipantsOnDb.Intersect(participantsDtos, ComplexTypeComparer<Participant>.Create(x => x.Inumber));
+                var alreadyTakenParticipants = partcipantsOnDb.Intersect(participantsDtos, ComplexTypeComparer<Participant>.Create(x => x.OfficeMail));
                 if (alreadyTakenParticipants.Any())
                 {
-                    ModelState.AddModelError("Participants", $"Participants submitted are already involved with other teams: {string.Join(", ", alreadyTakenParticipants.Select(x => x.Name))}. Note: individual participants are distinguished by their INumber.");
+                    ModelState.AddModelError("Participants", $"Participants submitted are already involved with other teams: {string.Join(", ", alreadyTakenParticipants.Select(x => x.Name))}. Note: individual participants are distinguished by their office Email.");
                     ViewData["locations"] = FetchEventLocationSelectItemList();
                     return View(teamViewModel);
                 }
@@ -142,7 +117,6 @@ namespace Contest.Web.Controllers
                 teamViewModel.CreatedBy = User.FindFirst(ClaimTypes.Name)?.Value ?? "";
                 teamViewModel.CreatedOn = DateTime.Now;
                 teamViewModel.TeamCode = Regex.Replace(Convert.ToBase64String(Guid.NewGuid().ToByteArray()), "[/+=]", "");
-
 
                 _context.Add(new Team(teamViewModel, participantsDtos));
                 await _context.SaveChangesAsync();

@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Contest.Enums;
 using System.IO;
+using Contest.Enums;
+using Contest.Web.Constants;
 
 namespace Contest.Models.Score
 {
@@ -15,8 +16,8 @@ namespace Contest.Models.Score
         {
             Id = teamViewModel.Id;
             TeamCode = teamViewModel.TeamCode;
-            TeamName = teamViewModel.TeamName;            
-            Theme = teamViewModel.Theme;
+            TeamName = teamViewModel.TeamName;
+            Theme = string.Join(',', teamViewModel.Themes);
             ProblemStatement = teamViewModel.ProblemStatement;
             ITRequirements = teamViewModel.ITRequirements;
             OtherRequirements = teamViewModel.OtherRequirements;
@@ -43,7 +44,7 @@ namespace Contest.Models.Score
         public string TeamCode { get; set; }
         public string TeamName { get; set; }
         public byte[] Avatar { get; set; }
-        public Theme Theme { get; set; }
+        public string Theme { get; set; }
         public string ProblemStatement { get; set; }
         public string RepoUrl { get; set; }        
         public float AverageInnovationScore { get; set; }
