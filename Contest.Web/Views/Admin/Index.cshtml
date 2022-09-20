@@ -46,7 +46,7 @@
             {
                 var teamName = plainOrderTeams[i].TeamName;
                 var teamScore = $"{plainOrderTeams[i].AveragePlainAverage:0.000}";
-                var theme = plainOrderTeams[i].Theme.ToString();
+                var theme = plainOrderTeams[i].Themes.ToStringFormatted();
                 var participants = plainOrderTeams[i].Participants;
                 var title = $"{theme} - {participants}";
 
@@ -80,7 +80,7 @@
             {
                 var teamName = bestIdeaTeams[i].TeamName;
                 var teamScore = $"{bestIdeaTeams[i].AverageBestIdeaScore:0.000}";
-                var theme = bestIdeaTeams[i].Theme.ToString();
+                var theme = bestIdeaTeams[i].Themes.ToStringFormatted();
                 var participants = bestIdeaTeams[i].Participants;
                 var title = $"{theme} - {participants}";
 
@@ -114,7 +114,7 @@
             {
                 var teamName = bestImplementationTeams[i].TeamName;
                 var teamScore = $"{bestImplementationTeams[i].AverageBestImplementationScore:0.000}";
-                var theme = bestImplementationTeams[i].Theme.ToString();
+                var theme = bestImplementationTeams[i].Themes.ToStringFormatted();
                 var participants = bestImplementationTeams[i].Participants;
                 var title = $"{theme} - {participants}";
 

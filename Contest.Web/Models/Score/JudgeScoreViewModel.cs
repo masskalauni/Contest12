@@ -16,7 +16,7 @@ namespace Contest.Models.Score
         [DisplayName("Team"), Required(ErrorMessage = "Team should be chosen to submit team score.")]
         public string Team { get; set; }
 
-        public Theme Theme { get; set; }
+        public string Theme { get; set; }
 
         public string Participants { get; set; }
 

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Contest.Models.Score.TeamViewModel>
+﻿@using Contest.Web.Extensions
+@model IEnumerable<Contest.Models.Score.TeamViewModel>
 
 @{
     ViewData["Title"] = "All Teams";
@@ -47,10 +48,10 @@ else
                             </div>
                             <div class="row">
                                 <div class="col-3 text-end">
-                                    <label class="fw-bold text-success" asp-for="@team.Theme"></label>
+                                    <label class="fw-bold text-success" asp-for="@team.Themes"></label>
                                 </div>
                                 <div class="col-9">
-                                    <p class="text-primary">@team.Theme</p>
+                                    <p class="text-primary">@team.Themes.ToStringFormatted()</p>
                                 </div>
                             </div>
 

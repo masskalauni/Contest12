@@ -15,6 +15,7 @@ using Contest.Web.Models.Admin;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 using Contest.Enums;
+using Contest.Web.Extensions;
 
 namespace Contest.Web.Controllers
 {
@@ -106,7 +107,7 @@ namespace Contest.Web.Controllers
                     AveragePlainAverage = g.Average(x => x.AverageScore.Value),
                     AverageBestIdeaScore = g.Average(x => x.BestIdeaScore.Value),
                     AverageBestImplementationScore = g.Average(x => x.BestTechnicalImplementationScore.Value),
-                    Theme = g.Key.Theme,
+                    Themes = g.Key.Theme.ToStringList(),
                     Participants = g.Key.Participants
                 }).ToList();
 

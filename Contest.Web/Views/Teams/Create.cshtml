@@ -20,10 +20,10 @@
                     <span asp-validation-for="TeamName" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
-                    <label asp-for="Theme" class="fw-bolder"></label>*
-                    @*<select asp-for="Theme" asp-items="Html.GetEnumSelectList<Contest.Enums.Theme>()" class="form-control"></select>*@
-                    <select asp-for="Theme" class="form-control" multiple></select>
-                    <span asp-validation-for="Theme" class="text-danger"></span>
+                    <label asp-for="Themes" class="fw-bolder"></label>*
+                    
+                    <select asp-for="Themes" class="form-control" multiple></select>
+                    <span asp-validation-for="Themes" class="text-danger"></span>
                 </div>
                 <div class="mb-3">
                     <label asp-for="ProblemStatement" class="fw-bolder"></label>*
@@ -116,7 +116,11 @@
             "Docker"
         ];
 
-        var choiceList = themes.map(x => { value: x, label: x });
+        var choiceList = [];
+        for (let i of themes) {
+            choiceList.push({ value: i, label: i });
+        }
+        
         const choices = new Choices(themeSelectList, {
             silent: false,
             items: [],

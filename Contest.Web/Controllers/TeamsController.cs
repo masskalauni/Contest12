@@ -42,6 +42,7 @@ namespace Contest.Web.Controllers
             var teamViewModels = teams.Select(x => new TeamViewModel(x, currentUserName));
             return View(teamViewModels);
         }
+
         public async Task<IActionResult> LastYearParticipants()
         {
             var teams = await _context.Teams
@@ -60,34 +61,15 @@ namespace Contest.Web.Controllers
                 .Include(team => team.Participants)
                 .Where(x => x.CreatedOn.Year == DateTime.Now.Year)
                 .ToListAsync();
+            
             var analytics = new TeamAnalyticsViewModel
             {
                 TotalTeams = teams.Count,
-                TotalParticipants = teams.Sum(x => x.Participants.Count),
-                TeamsByTheme = teams.GroupBy(x => x.Theme)
-                    .OrderBy(y => y.Key)
-                    .Select(teamGroup => (teamGroup.Key, teamGroup.Count(),
-                        teamGroup.Select(x => x.TeamName).ToList())).ToList(),
-                TeamsByLocation = teams.GroupBy(x => x.Location)
-                    .OrderBy(y => y.Key)
-                    .Select(teamGroup => (teamGroup.Key, teamGroup.Count(),
-                        teamGroup.Select(z => z.TeamName).ToList())).ToList(),
+                TotalParticipants = teams.Sum(x => x.Participants.Count),                
                 AllParticipants = teams.SelectMany(x => x.Participants.Select(y => TeamViewModel.SerializeParticipant(y))).ToList(),
                 AllTeams = teams.Select(x => TeamViewModel.SerializeTeam(x)).ToList(),
                 TeamRequirements = teams.Select(x => (x.TeamName, x.ITRequirements, x.OtherRequirements)).ToList()
-
-            };
-
-            //Count selected themes eagerly, we are adding not chosen ones to same list
-            analytics.ThemesSelectedCount = analytics.TeamsByTheme.Count;
-
-            //Append themes not chosen by any teams
-            var themesNotChosen = Enum.GetNames(typeof(Theme)).Except(analytics.TeamsByTheme.Select(x => x.Theme.ToString()));
-
-            foreach (var themeNotChosen in themesNotChosen)
-            {
-                analytics.TeamsByTheme.Add((Theme: Enum.Parse<Theme>(themeNotChosen), TeamCount: 0, TeamList: null));
-            }            
+            };            
 
             return View(analytics);
         }
