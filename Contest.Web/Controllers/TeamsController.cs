@@ -90,7 +90,7 @@ namespace Contest.Web.Controllers
         // Specific properties only: To protect from overposting attacks
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("TeamName,Avatar,Theme,ProblemStatement,ITRequirements,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
+        public async Task<IActionResult> Create(TeamViewModel teamViewModel)
         {   
             if (ModelState.IsValid)
             {
@@ -150,7 +150,7 @@ namespace Contest.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string teamCode, [Bind("Id,TeamCode,TeamName,Avatar,Theme,ProblemStatement,ITRequirements,RepoUrl,Location,OtherRequirements,Participants")] TeamViewModel teamViewModel)
+        public async Task<IActionResult> Edit(string teamCode, TeamViewModel teamViewModel)
         {
             if (teamCode != teamViewModel.TeamCode)
             {
