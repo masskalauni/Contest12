@@ -1,0 +1,63 @@
+@model List<string>
+
+<script src="/lib/choices.js/choices.min.js"></script>
+
+<script>
+    var themeSelectList = document.getElementById("Themes");
+    var themes = [
+        "OpenIdea",
+        "ChatBots",
+        "AI",
+        "DataScience",
+        "Optimization",
+        "Automation",
+        "BigDataTechnologies",
+        "Visualization",
+        "Reporting",
+        "ExploreTools",
+        "Security",
+        "DeepLearing",
+        "Architecture",
+        "Upgrade",
+        "MSTeams",
+        "Hadoop",
+        "CSharp",
+        "Java",
+        "Python",
+        "JavaScript",
+        "Angular",
+        "React",
+        "Vue",
+        "Blazor",
+        "WebAssembly",
+        "RestApi",
+        "Benchmarking",
+        "Kubernetes",
+        "Aws",
+        "Azure",
+        "Containerization",
+        "Docker"
+    ];
+
+    let selectedChoices = @Json.Serialize(Model);
+    let selectedItems = [];
+    
+    if (selectedChoices) {
+        for (let i of selectedChoices) {
+            selectedItems.push({ value: i, label: i });
+        }
+    }
+
+    var choiceList = [];
+    for (let i of themes) {
+        choiceList.push({ value: i, label: i });
+    }
+
+    const choices = new Choices(themeSelectList, {
+        silent: false,
+        items: [],
+        removeItemButton: true,
+        choices: choiceList,
+        items: selectedItems
+    });
+</script>

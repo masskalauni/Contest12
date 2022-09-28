@@ -9,59 +9,59 @@
 <h4 class="text-center mt-3 text-warning">Edit Your Team Detail</h4>
 <div class="container h-100">
   <div class="row h-100 justify-content-center">
-    <div class="col-md-8 text-warning">
+    <div class="col-md-8">
       <form asp-action="Edit" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" asp-for="TeamCode" />
         <input type="hidden" asp-for="Id" />
         <div class="form-group">
-          <label asp-for="TeamName" class="font-weight-bold"></label>
+          <label asp-for="TeamName" class="fw-bold"></label>
           <input asp-for="TeamName" class="form-control" required />
           <span asp-validation-for="TeamName" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="Themes" class="font-weight-bold"></label>
-          <select asp-for="Themes" asp-items="Html.GetEnumSelectList<Theme>()" class="form-control"></select>
+          <label asp-for="Themes" class="fw-bold"></label>
+          <select asp-for="Themes" class="form-control" multiple></select>
           <span asp-validation-for="Themes" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="ProblemStatement" class="font-weight-bold"></label>
+          <label asp-for="ProblemStatement" class="fw-bold"></label>
           <textarea asp-for="ProblemStatement" class="form-control" rows="3" required></textarea>
           <span asp-validation-for="ProblemStatement" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="Location" class="font-weight-bold"></label>
+          <label asp-for="Location" class="fw-bold"></label>
           <select asp-for="Location" asp-items="@ViewData["locations"] as List<SelectListItem>" class="form-control"></select>
           <span asp-validation-for="Location" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="Participants" class="font-weight-bold"></label>
-          <textarea asp-for="Participants" class="form-control" rows="5" placeholder="Name, INumber, Phone, Email, Department" required></textarea>
+          <label asp-for="Participants" class="fw-bold"></label>
+          <textarea asp-for="Participants" class="form-control" rows="5" placeholder="Name, Email, Department" required></textarea>
           <span asp-validation-for="Participants" class="text-danger"></span>
           <div class="alert alert-info" role="alert">
             <strong>Participants input Format:</strong><i>Each participant must be in new line</i><br />
-            Bishnu Rawal, i82287, 9849182885, bishnu.rawal@verscend.com, R&D1 <br />
-            Niraj Shah (Team Lead), i65001, 1111111112, niraj.shah@verscend.com, R&D1 <br />
-            Sanjeev Shrestha, i81111, 7777777770, sanjeev.shrestha@verscend.com, GA
+            Bishnu Rawal, bishnu.rawal@verscCotivitiend.com, R&D1 <br />
+            Sakar Shrestha (Team Lead), Sakar.Shrestha@Cotiviti.com, R&D1 <br />
+            Sanjeev Shrestha, sanjeev.shrestha@Cotiviti.com, GA
           </div>
         </div>
         <div class="form-group">
-          <label asp-for="ITRequirements" class="font-weight-bold"></label>
+          <label asp-for="ITRequirements" class="fw-bold"></label>
           <textarea asp-for="ITRequirements" class="form-control" rows="3"></textarea>
           <span asp-validation-for="ITRequirements" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="OtherRequirements" class="font-weight-bold"></label>
+          <label asp-for="OtherRequirements" class="fw-bold"></label>
           <textarea asp-for="OtherRequirements" class="form-control" rows="3"></textarea>
           <span asp-validation-for="OtherRequirements" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="RepoUrl" class="font-weight-bold"></label>
+          <label asp-for="RepoUrl" class="fw-bold"></label>
           <input asp-for="RepoUrl" class="form-control" />
           <span asp-validation-for="RepoUrl" class="text-danger"></span>
         </div>
         <div class="form-group">
-          <label asp-for="Avatar" class="font-weight-bold"></label>
+          <label asp-for="Avatar" class="fw-bold"></label>
           <input asp-for="Avatar" class="form-control" />
           <div class="text-center">
             <span class="mr-5">Current Avatar</span>
@@ -77,6 +77,13 @@
 </div>
 
 
+@section Styles {
+    <link rel="stylesheet" href="/lib/choices.js/choices.min.css" />
+}
+
 @section Scripts {
-  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_ThemeChoices", @Model.Themes);
+    }
 }

@@ -16,8 +16,8 @@ else
         @foreach (var team in Model)
         {
             <div class="col">
-                <div class="card">
-                    <img class="card-img-top" src="@(team.AvatarDataUrl ?? "/images/team.png")" alt="Team Avatar">
+                <div class="card font-monospace" style="font-size:12px;">
+                    <img class="card-img-top" height="200" src="@(team.AvatarDataUrl ?? "/images/team.png")" alt="Team Avatar">
                     <div class="card-header text-center text-primary">
                         <span class="display-6">@team.TeamName</span>
                         @if (team.IsCreatedByCurrentUser || User.IsInRole(Contest.Web.Constants.Role.Admin))

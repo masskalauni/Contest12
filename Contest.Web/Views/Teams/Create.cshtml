@@ -21,7 +21,7 @@
                 </div>
                 <div class="mb-3">
                     <label asp-for="Themes" class="fw-bolder"></label>*
-                    
+
                     <select asp-for="Themes" class="form-control" multiple></select>
                     <span asp-validation-for="Themes" class="text-danger"></span>
                 </div>
@@ -73,60 +73,10 @@
     <link rel="stylesheet" href="/lib/choices.js/choices.min.css" />
 }
 
-    @section Scripts {
+@section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        await Html.RenderPartialAsync("_ThemeChoices");
     }
-    <script src="/lib/choices.js/choices.min.js"></script>
-
-    <script>
-        var themeSelectList = document.getElementById("Theme");
-        var themes = [
-            "OpenIdea",
-            "ChatBots",
-            "AI",
-            "DataScience",
-            "Optimization",
-            "Automation",
-            "BigDataTechnologies",
-            "Visualization",
-            "Reporting",
-            "ExploreTools",
-            "Security",
-            "DeepLearing",
-            "Architecture",
-            "Upgrade",
-            "MSTeams",
-            "Hadoop",
-            "CSharp",
-            "Java",
-            "Python",
-            "JavaScript",
-            "Angular",
-            "React",
-            "Vue",
-            "Blazor",
-            "WebAssembly",
-            "RestApi",
-            "Benchmarking",
-            "Kubernetes",
-            "Aws",
-            "Azure",
-            "Containerization",
-            "Docker"
-        ];
-
-        var choiceList = [];
-        for (let i of themes) {
-            choiceList.push({ value: i, label: i });
-        }
-        
-        const choices = new Choices(themeSelectList, {
-            silent: false,
-            items: [],
-            removeItemButton: true,
-            choices: choiceList
-        });
-    </script>
-    }
+}
 
