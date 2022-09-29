@@ -1,15 +1,14 @@
 ﻿@{
     ViewData["Title"] = "Home";
-    var greeting = "Welcome";
+    var greeting = "Welcome, Coders!";
     var name = User.Identity.IsAuthenticated ? User.Identity.Name : "";
 }
 
-<div class="display-2 text-center text-uppercase">@greeting</div>
-<div class="display-1 text-center text-uppercase">TO</div>
+<div class="display-6 text-center text-uppercase">@greeting</div>
 <div class="pl-5 pr-5">
     <div class="jumbotron jumbotron-fluid m-4">
         <div class="text-center">
-            <img class="img-fluid" style="height:20em;" src="~/images/banners/banner.jpg" alt="Banner">
+            <img class="img-fluid" style="height:40em;" src="~/images/banners/banner.jpg" alt="Banner">
         </div>
     </div>
 </div>
